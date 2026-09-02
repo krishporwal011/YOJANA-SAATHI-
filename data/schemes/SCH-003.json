@@ -1,0 +1,22 @@
+{
+  "scheme_name": "National Means-cum-Merit Scholarship",
+  "ministry": "Ministry of Education",
+  "state": "All India",
+  "benefits": "Scholarship amount of Rs 12,000 per annum (Rs 1,000 per month) to meritorious students belonging to economically weaker sections to reduce dropouts at class 8.",
+  "eligibility": {
+    "age_min": null,
+    "age_max": 16,
+    "income_limit": 350000,
+    "occupation": "student",
+    "education": "Class 8 passed / studying in Class 9",
+    "category": ""
+  },
+  "documents": [
+    "school ID",
+    "income certificate"
+  ],
+  "application_url": "https://scholarships.gov.in/",
+  "deadline": "2026-10-31",
+  "source_url": "https://scholarships.gov.in/",
+  "last_verified": "2026-09-01"
+}

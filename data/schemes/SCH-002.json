@@ -1,0 +1,22 @@
+{
+  "scheme_name": "Ayushman Bharat PM-JAY",
+  "ministry": "Ministry of Health and Family Welfare",
+  "state": "All India",
+  "benefits": "Health insurance cover of up to Rs 5,00,000 per family per year for secondary and tertiary care hospitalization across public and private empaneled hospitals.",
+  "eligibility": {
+    "age_min": null,
+    "age_max": null,
+    "income_limit": 180000,
+    "occupation": "",
+    "education": "",
+    "category": ""
+  },
+  "documents": [
+    "income certificate",
+    "ration card"
+  ],
+  "application_url": "https://nha.gov.in/PM-JAY",
+  "deadline": "Ongoing",
+  "source_url": "https://pmjay.gov.in/",
+  "last_verified": "2026-09-01"
+}

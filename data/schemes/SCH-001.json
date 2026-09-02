@@ -1,0 +1,22 @@
+{
+  "scheme_name": "PM-KISAN Samman Nidhi",
+  "ministry": "Ministry of Agriculture and Farmers Welfare",
+  "state": "All India",
+  "benefits": "Financial benefit of Rs 6,000 per year in three equal four-monthly installments directly into the bank accounts of eligible farmer families.",
+  "eligibility": {
+    "age_min": null,
+    "age_max": null,
+    "income_limit": null,
+    "occupation": "farmer",
+    "education": "",
+    "category": ""
+  },
+  "documents": [
+    "land record",
+    "bank passbook"
+  ],
+  "application_url": "https://pmkisan.gov.in/",
+  "deadline": "Ongoing",
+  "source_url": "https://pmkisan.gov.in/",
+  "last_verified": "2026-09-01"
+}
