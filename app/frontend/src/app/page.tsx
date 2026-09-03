@@ -40,7 +40,11 @@ export default function Home() {
             <section>
               {step === "profile" && <ProfileForm onNext={goToConfirm} />}
               {step === "confirm" && profile && <ConfirmScreen profile={profile} onEdit={() => setStep("profile")} onConfirm={confirmAndCheck} />}
-              {step === "results" && <ResultsScreen onBack={() => setStep("confirm")} onViewDocuments={viewDocuments} />}
+              {step === "results" && profile && (
+                <ResultsScreen
+                  profile={profile}
+                  onBack={() => setStep("confirm")}
+                  onViewDocuments={viewDocuments}/>)}
               {step === "documents" && selectedScheme && <DocumentsScreen scheme={selectedScheme} onBack={() => setStep("results")} />}
             </section>
           </div>
@@ -56,7 +60,7 @@ export default function Home() {
       <section className="dashboard-hero">
         <div className="dashboard-container hero-grid">
           <div className="hero-copy">
-            <div className="eyebrow"><Sparkles size={16} /> AI-powered citizen assistance</div>
+            {/* <div className="eyebrow"><Sparkles size={16} /> AI-powered citizen assistance</div> */}
             <h2>Find the right government schemes.<br /><span>Get the right support.</span></h2>
             <p>Check eligibility, understand required documents, and follow the right application steps — all in one place.</p>
             <div className="hero-actions">

@@ -28,7 +28,7 @@ export const DocumentsScreen: React.FC<Props> = ({ scheme, onBack }) => {
                 <div className="font-medium">{d.name}</div>
                 <div className="text-xs text-slate-500">{d.required ? "Required" : "Optional"}</div>
               </div>
-              <div className={`text-sm font-semibold ${d.required ? "text-amber-600" : "text-emerald-600"}`}>{d.required ? "Missing" : "Available"}</div>
+              <div className={`text-sm font-semibold ${d.required ? "text-amber-600" : "text-emerald-600"}`}>{d.required ? "Needed" : "Available"}</div>
             </li>
           ))}
         </ul>
@@ -45,7 +45,12 @@ export const DocumentsScreen: React.FC<Props> = ({ scheme, onBack }) => {
       </div>
 
       <div className="mt-6 flex items-center justify-between">
-        <button onClick={onBack} className="px-3 py-2 rounded-md border">Back to results</button>
+        <button
+          onClick={onBack}
+          className="px-4 py-2 rounded-md border border-slate-300 text-slate-700 hover:bg-slate-50 transition"
+        >
+          ← Back
+        </button>
         <div className="text-right">
           <a href={scheme.application_url || "#"} target="_blank" rel="noopener noreferrer" className="px-4 py-2 bg-yojana-navy text-white rounded-md">Apply on official portal</a>
           <div className="text-xs text-slate-500 mt-2">Yojana Saathi does not submit applications on your behalf. You will be redirected to the official government portal.</div>
