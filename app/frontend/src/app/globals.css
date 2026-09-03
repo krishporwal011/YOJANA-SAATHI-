@@ -101,9 +101,9 @@ button { cursor:pointer; }
 /* Eligibility flow: only visible after clicking Eligibility Check */
 .workflow-page { min-height:100vh; color:var(--ink); background:linear-gradient(180deg,#03143a 0 155px,#eef4fb 155px 100%); }
 .workflow-page .app-header { position:sticky; }
-.workflow-shell { width:min(1440px,calc(100% - 64px)); margin:0 auto; padding:28px 0 65px; }
+.workflow-shell { width:min(1440px,calc(100% - 64px)); margin:0 auto; padding:85px 0 65px; }
 .workflow-card { overflow:hidden; border:1px solid rgba(92,135,201,.35); border-radius:20px; background:linear-gradient(180deg,#061d49,#08285d); box-shadow:0 25px 65px rgba(3,20,58,.2); padding:0 18px 18px; }
-.workflow-stepper { padding:18px 10px 8px; }
+.workflow-stepper { padding:18px 10px 35px; }
 .workflow-card > section { padding:0 0 0; }
 
 /* Progress component overrides */
@@ -118,7 +118,6 @@ button { cursor:pointer; }
 .workflow-stepper nav > div > div div:nth-child(2) div:nth-child(2) { color:#9eb1d0 !important; }
 .workflow-stepper nav > div > div div:nth-child(2) div { font-size:12px !important; }
 .workflow-stepper nav > div > div > div:first-child { width:42px !important; height:42px !important; }
-.workflow-stepper nav > div > div > div:last-child { background:linear-gradient(90deg,#0873ff,#2b8bff) !important; height:3px !important; bottom:0 !important; left:12px !important; right:12px !important; }
 
 /* Profile form */
 .profile-form { background:#fff; border-radius:16px; padding:30px 34px 24px; box-shadow:0 10px 35px rgba(5,26,63,.12); }
