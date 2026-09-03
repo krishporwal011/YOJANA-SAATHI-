@@ -8,8 +8,20 @@
   --background-end-rgb: 244, 244, 245;
 }
 
+:root {
+  --foreground-rgb: 24, 24, 27;
+  --background-start-rgb: 250, 250, 250;
+  --background-end-rgb: 244, 244, 245;
+}
+
 body {
   color: rgb(var(--foreground-rgb));
-  background: #f8fafc;
+  background: #f3f8ff; /* light blue background */
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
 }
+
+/* Utility for custom palette text */
+.text-yojana-navy { color: #0B3B7A; }
+.bg-yojana-navy { background-color: #0B3B7A; }
+.bg-yojana-light { background-color: #EEF8FF; }
+.text-yojana-light { color: #EEF8FF; }

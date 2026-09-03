@@ -25,8 +25,17 @@ const config: Config = {
           orange: "#FF671F",
           white: "#FFFFFF",
           green: "#046A38",
-          navy: "#06038D",
+            navy: "#06038D",
         },
+          yojana: {
+            navy: '#0B3B7A',
+            navyDark: '#062840',
+            light: '#EEF8FF',
+            accent: '#0B7CBE',
+            success: '#16A34A',
+            warn: '#F59E0B',
+            danger: '#DC2626',
+          }
       },
     },
   },
