@@ -14,7 +14,7 @@ button { cursor:pointer; }
 
 /* Shared header */
 .app-header { position:sticky; top:0; z-index:50; color:#fff; background:rgba(3,20,58,.97); border-bottom:1px solid rgba(255,255,255,.09); backdrop-filter:blur(16px); }
-.nav-inner { min-height:78px; display:flex; align-items:center; gap:30px; }
+.nav-inner { min-height:90px; display:flex; align-items:center; gap:30px; }
 .brand { border:0; background:transparent; color:#fff; display:flex; align-items:center; gap:12px; padding:0; text-align:left; min-width:270px; }
 .brand-emblem { width:46px; height:52px; display:grid; place-items:center; color:var(--gold); }
 .brand strong { display:block; font-size:17px; letter-spacing:-.35px; }
@@ -162,4 +162,12 @@ button { cursor:pointer; }
 
 .nav-help:hover {
   color: #fff;
+}
+
+
+.ashoka-emblem {
+  width: 58px;
+  height: 76px;
+  object-fit: cover;
+  flex-shrink: 0;
 }
