@@ -1,30 +1,44 @@
 "use client";
+
 import React from "react";
+import { HelpCircle, Home, Landmark, Search, ShieldCheck, UserRound, } from "lucide-react";
 
-interface Props { variant?: "light" | "default"; }
+interface Props {
+  isWorkflow?: boolean;
+  onHome?: () => void;
+  onEligibility?: () => void;
+};
 
-export const Header: React.FC<Props> = () => (
-  <header className="site-header">
-    <div className="brand-wrap">
-      <div className="emblem-shell" aria-label="Indian national emblem inspired mark">
-        <svg viewBox="0 0 90 90" className="emblem-svg" aria-hidden="true">
-          <path d="M25 43c-3-8 1-16 8-19 2-7 8-11 12-11s10 4 12 11c7 3 11 11 8 19l-4 8H29l-4-8Z" fill="currentColor"/>
-          <path d="M18 53h54M24 58h42M29 63h32" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
-          <path d="M38 49V34m7 15V31m7 18V34" stroke="#0b2855" strokeWidth="2.2" strokeLinecap="round"/>
-          <circle cx="45" cy="27" r="3" fill="#d8b65c"/>
-        </svg>
+export const Header: React.FC<Props> = ({ isWorkflow = false, onHome, onEligibility }) => {
+  const scrollTo = (id: string) => document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+
+  return (
+    <header className="app-header">
+      <div className="dashboard-container nav-inner">
+        <button className="brand" onClick={onHome} aria-label="Go to home">
+          <div className="brand-emblem"><Landmark size={28} strokeWidth={2} /></div>
+          <div><strong>YOJANA SAATHI AI</strong><span>Government Scheme Assistant</span></div>
+        </button>
+
+        <nav className="main-nav" aria-label="Main navigation">
+          <button className={!isWorkflow ? "active" : ""} onClick={onHome}><Home size={16} /> Home</button>
+          <button onClick={() => !isWorkflow && scrollTo("schemes")}><Landmark size={16} /> Schemes</button>
+          <button className={isWorkflow ? "active" : ""} onClick={onEligibility}><Search size={16} /> Eligibility Check</button>
+          {/* <button onClick={() => !isWorkflow && scrollTo("assistant")}><FileText size={16} /> My Documents</button> */}
+           <a
+          href="mailto:yojanasaaathi.ai@gmail.com?subject=Yojana%20Saathi%20AI%20Query"
+          className="nav-help">
+          <HelpCircle size={16} /> Help
+        </a>
+        </nav>
+
+        <div className="nav-right">
+          <div className="secure-pill"><ShieldCheck size={15} /> Secure</div>
+          <div className="profile-pill"><UserRound size={16} /> Ramesh Kumar <span className="chevron">⌄</span></div>
+        </div>
       </div>
-      <div>
-        <div className="brand-kicker">CITIZEN SERVICES • INDIA</div>
-        <h1>YOJANA SAATHI <span>AI</span></h1>
-        <p className="tagline">From Eligibility to Action.</p>
-        <p className="brand-desc">Find government schemes that may be relevant to you.</p>
-      </div>
-    </div>
-    <div className="secure-badge">
-      <div className="secure-icon">✓</div>
-      <div><strong>Trusted &amp; Secure</strong><span>Your data is <b>100% confidential</b></span></div>
-    </div>
-  </header>
-);
+    </header>
+  );
+};
+
 export default Header;
