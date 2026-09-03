@@ -28,26 +28,35 @@ export default function Home() {
   };
 
   return (
-    <main className="min-h-screen bg-slate-50 py-8">
-      <div className="max-w-[1400px] mx-auto px-4">
-        <Header />
-        <ProgressSteps current={step} />
-
-        <section className="py-6">
-          {step === "profile" && <ProfileForm onNext={goToConfirm} />}
-          {step === "confirm" && profile && (
-            <ConfirmScreen profile={profile} onEdit={() => setStep("profile")} onConfirm={confirmAndCheck} />
-          )}
-          {step === "results" && (
-            <ResultsScreen onBack={() => setStep("confirm")} onViewDocuments={viewDocuments} />
-          )}
-          {step === "documents" && selectedScheme && (
-            <DocumentsScreen scheme={selectedScheme} onBack={() => setStep("results")} />
-          )}
-        </section>
-
-        <footer className="mt-12 text-xs text-slate-500 text-center">© 2026 Yojana Saathi AI Team</footer>
+    <main className="min-h-screen app-shell">
+      <div className="hero-bg">
+        <div className="max-w-[1400px] mx-auto px-4">
+          <Header variant="light" />
+        </div>
+        <div className="hero-decor" />
       </div>
+
+      <div className="main-wrap">
+        <div className="main-card">
+          
+          <div className="stepper-wrap"><ProgressSteps current={step} /></div>
+
+          <section className="pt-2">
+            {step === "profile" && <ProfileForm onNext={goToConfirm} />}
+            {step === "confirm" && profile && (
+              <ConfirmScreen profile={profile} onEdit={() => setStep("profile")} onConfirm={confirmAndCheck} />
+            )}
+            {step === "results" && (
+              <ResultsScreen onBack={() => setStep("confirm")} onViewDocuments={viewDocuments} />
+            )}
+            {step === "documents" && selectedScheme && (
+              <DocumentsScreen scheme={selectedScheme} onBack={() => setStep("results")} />
+            )}
+          </section>
+        </div>
+      </div>
+
+      <footer className="site-footer"><div>© 2026 Yojana Saathi AI Team</div><div>Secure • Transparent • Citizen-first</div></footer>
     </main>
   );
 }

@@ -45,52 +45,69 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({ initial = {}, onNext }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="w-[85%] max-w-[1100px] mx-auto bg-white border border-slate-200 rounded-2xl shadow p-8">
-      <h3 className="text-xl md:text-2xl font-semibold text-slate-900 mb-2">Profile / Tell us about yourself</h3>
-      <p className="text-sm text-slate-600 mb-6">We use this information to check which schemes you may be eligible for.</p>
+    <form onSubmit={handleSubmit} className="w-full profile-form">
+      <div className="mb-8">
+        <div className="flex items-center gap-3">
+          <div className="profile-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="#0B3B7A" strokeWidth="0.6"/></svg>
+          </div>
+          <div>
+            <div className="profile-kicker">PROFILE</div>
+            <h2 className="text-3xl md:text-4xl font-extrabold text-slate-950 tracking-tight">Tell us about yourself</h2>
+            <p className="text-sm text-slate-500 mt-2 max-w-2xl">Share a few details so we can identify government schemes that may be relevant to you.</p>
+          </div>
+        </div>
+      </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="space-y-3">
-          <FormField label="Full name">
-            <input required value={profile.name} onChange={(e) => setProfile({ ...profile, name: e.target.value })} placeholder="e.g. Sita Devi" className="w-full p-3 rounded-md border border-slate-300 bg-slate-50" />
-          </FormField>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div>
+          <div className="form-section-title">Personal details</div>
+          <div className="space-y-4">
+            <FormField label="Full name">
+              <input required value={profile.name} onChange={(e) => setProfile({ ...profile, name: e.target.value })} placeholder="e.g. Sita Devi" className="w-full yojana-input premium-input rounded-xl border bg-white focus-yojana" />
+            </FormField>
 
-          <FormField label="Annual family income (₹)">
-            <input required type="number" min={0} value={profile.income} onChange={(e) => setProfile({ ...profile, income: e.target.value === "" ? "" : Number(e.target.value) })} placeholder="e.g. 180000" className="w-full p-3 rounded-md border border-slate-300 bg-slate-50" />
-          </FormField>
+            <FormField label="Annual family income (₹)">
+              <input required type="number" min={0} value={profile.income} onChange={(e) => setProfile({ ...profile, income: e.target.value === "" ? "" : Number(e.target.value) })} placeholder="e.g. 180000" className="w-full yojana-input premium-input rounded-xl border bg-white focus-yojana" />
+            </FormField>
 
-          <FormField label="Occupation">
-            <input required value={profile.occupation} onChange={(e) => setProfile({ ...profile, occupation: e.target.value })} placeholder="e.g. Farmer" className="w-full p-3 rounded-md border border-slate-300 bg-slate-50" />
-          </FormField>
+            <FormField label="Occupation">
+              <input required value={profile.occupation} onChange={(e) => setProfile({ ...profile, occupation: e.target.value })} placeholder="e.g. Farmer" className="w-full yojana-input premium-input rounded-xl border bg-white focus-yojana" />
+            </FormField>
+          </div>
         </div>
 
-        <div className="space-y-3">
-          <FormField label="Age">
-            <input required type="number" min={1} max={120} value={profile.age} onChange={(e) => setProfile({ ...profile, age: e.target.value === "" ? "" : Number(e.target.value) })} placeholder="e.g. 45" className="w-full p-3 rounded-md border border-slate-300 bg-slate-50" />
-          </FormField>
+        <div>
+          <div className="form-section-title">Financial & social details</div>
+          <div className="space-y-4">
+            <FormField label="Age">
+              <input required type="number" min={1} max={120} value={profile.age} onChange={(e) => setProfile({ ...profile, age: e.target.value === "" ? "" : Number(e.target.value) })} placeholder="e.g. 45" className="w-full yojana-input premium-input rounded-xl border bg-white focus-yojana" />
+            </FormField>
 
-          <FormField label="State / UT">
-            <select required value={profile.state} onChange={(e) => setProfile({ ...profile, state: e.target.value })} className="w-full p-3 rounded-md border border-slate-300 bg-slate-50">
-              <option value="">Select state</option>
-              {INDIAN_STATES.map((s) => (<option key={s} value={s}>{s}</option>))}
-            </select>
-          </FormField>
+            <FormField label="State / UT">
+              <select required value={profile.state} onChange={(e) => setProfile({ ...profile, state: e.target.value })} className="w-full yojana-input premium-input rounded-xl border bg-white focus-yojana">
+                <option value="">Select state</option>
+                {INDIAN_STATES.map((s) => (<option key={s} value={s}>{s}</option>))}
+              </select>
+            </FormField>
 
-          <FormField label="Category">
-            <select required value={profile.category} onChange={(e) => setProfile({ ...profile, category: e.target.value })} className="w-full p-3 rounded-md border border-slate-300 bg-slate-50">
-              <option value="">Select category</option>
-              <option>General</option>
-              <option>OBC</option>
-              <option>SC</option>
-              <option>ST</option>
-              <option>EWS</option>
-            </select>
-          </FormField>
+            <FormField label="Category">
+              <select required value={profile.category} onChange={(e) => setProfile({ ...profile, category: e.target.value })} className="w-full yojana-input premium-input rounded-xl border bg-white focus-yojana">
+                <option value="">Select category</option>
+                <option>General</option>
+                <option>OBC</option>
+                <option>SC</option>
+                <option>ST</option>
+                <option>EWS</option>
+              </select>
+            </FormField>
+          </div>
         </div>
 
         <div className="md:col-span-2">
-          <FormField label="Education">
-            <select required value={profile.education} onChange={(e) => setProfile({ ...profile, education: e.target.value })} className="w-full p-3 rounded-md border border-slate-300 bg-slate-50">
+          <div className="form-section-title">Education</div>
+          <FormField label="Highest education">
+            <select required value={profile.education} onChange={(e) => setProfile({ ...profile, education: e.target.value })} className="w-full yojana-input premium-input rounded-xl border bg-white focus-yojana">
               <option value="">Select education</option>
               <option>No Formal Education</option>
               <option>Primary (Class 1-5)</option>
@@ -105,14 +122,11 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({ initial = {}, onNext }
         </div>
       </div>
 
-      <div className="mt-6 flex items-center justify-end">
-        <Button type="submit">Continue →</Button>
+      <div className="mt-10 flex items-center justify-between gap-4">
+        <div className="privacy-inline"><span>🔒</span><span>Your information stays confidential and is used only to find relevant schemes.</span></div><Button type="submit" className="h-14 px-9 continue-btn">Continue <span>→</span></Button>
       </div>
 
-      <div className="mt-4 text-xs text-slate-500 flex items-center gap-2">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="text-slate-500"><path d="M12 1l3 4 4 1-3 3 1 4-4-2-4 2 1-4-3-3 4-1 3-4z" fill="#0B3B7A"/></svg>
-        <span>We protect your privacy and secure your data.</span>
-      </div>
+      
     </form>
   );
 };
