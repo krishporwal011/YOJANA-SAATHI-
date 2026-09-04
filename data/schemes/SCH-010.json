@@ -1,0 +1,25 @@
+{
+  "id": "SCH-010",
+  "scheme_name": "Post-Matric Scholarship Scheme",
+  "ministry": "Ministry of Social Justice and Empowerment",
+  "state": "All India",
+  "benefits": "Complete tuition fee reimbursement and maintenance allowance for post-secondary education.",
+  "eligibility": {
+    "age_min": 15,
+    "age_max": 30,
+    "income_limit": 250000,
+    "occupation": "student",
+    "education": "10th pass",
+    "category": ""
+  },
+  "documents": [
+    "10th mark sheet",
+    "income certificate",
+    "institution admission proof",
+    "Aadhaar card"
+  ],
+  "application_url": "https://scholarships.gov.in/",
+  "deadline": "2026-11-15",
+  "source_url": "https://scholarships.gov.in/",
+  "last_verified": "2026-09-01"
+}

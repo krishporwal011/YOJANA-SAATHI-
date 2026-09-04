@@ -1,0 +1,24 @@
+{
+  "id": "SCH-029",
+  "scheme_name": "Deen Dayal Upadhyaya Grameen Kaushalya Yojana (DDU-GKY)",
+  "ministry": "Ministry of Rural Development",
+  "state": "All India",
+  "benefits": "Free residential skill training and placement in wage employment for rural unemployed youth with guaranteed minimum wage.",
+  "eligibility": {
+    "age_min": 15,
+    "age_max": 35,
+    "income_limit": null,
+    "occupation": "unemployed",
+    "education": "",
+    "category": ""
+  },
+  "documents": [
+    "BPL card / MGNREGA job card",
+    "Aadhaar card",
+    "school leaving certificate"
+  ],
+  "application_url": "https://ddugky.gov.in/",
+  "deadline": "Ongoing",
+  "source_url": "https://ddugky.gov.in/",
+  "last_verified": "2026-09-01"
+}

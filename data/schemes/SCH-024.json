@@ -1,0 +1,24 @@
+{
+  "id": "SCH-024",
+  "scheme_name": "Atal Pension Yojana (APY)",
+  "ministry": "Ministry of Finance",
+  "state": "All India",
+  "benefits": "Guaranteed monthly pension between Rs 1,000 and Rs 5,000 after 60 years of age based on monthly contribution.",
+  "eligibility": {
+    "age_min": 18,
+    "age_max": 40,
+    "income_limit": null,
+    "occupation": "salaried_employee",
+    "education": "",
+    "category": ""
+  },
+  "documents": [
+    "savings bank account",
+    "Aadhaar card",
+    "mobile number"
+  ],
+  "application_url": "https://www.npscra.nsdl.co.in/scheme-details.php",
+  "deadline": "Ongoing",
+  "source_url": "https://www.npscra.nsdl.co.in/",
+  "last_verified": "2026-09-01"
+}

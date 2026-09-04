@@ -1,9 +1,9 @@
 {
-  "id": "SCH-001",
-  "scheme_name": "PM-KISAN Samman Nidhi",
+  "id": "SCH-007",
+  "scheme_name": "Soil Health Card Scheme",
   "ministry": "Ministry of Agriculture and Farmers Welfare",
   "state": "All India",
-  "benefits": "Financial benefit of Rs 6,000 per year in three equal four-monthly installments directly into the bank accounts of eligible farmer families.",
+  "benefits": "Free soil nutrient testing and personalized soil health cards issued every 2 years advising optimal fertilizer usage.",
   "eligibility": {
     "age_min": null,
     "age_max": null,
@@ -14,10 +14,10 @@
   },
   "documents": [
     "land record",
-    "bank passbook"
+    "Aadhaar card"
   ],
-  "application_url": "https://pmkisan.gov.in/",
+  "application_url": "https://soilhealth.dac.gov.in/",
   "deadline": "Ongoing",
-  "source_url": "https://pmkisan.gov.in/",
+  "source_url": "https://soilhealth.dac.gov.in/",
   "last_verified": "2026-09-01"
 }

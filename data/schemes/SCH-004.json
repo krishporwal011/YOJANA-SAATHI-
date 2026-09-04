@@ -1,0 +1,25 @@
+{
+  "id": "SCH-004",
+  "scheme_name": "Kisan Credit Card (KCC) Scheme",
+  "ministry": "Ministry of Agriculture and Farmers Welfare",
+  "state": "All India",
+  "benefits": "Provides timely credit to farmers at subsidized interest rates (starting at 4% p.a.) for cultivation, harvest, and farm maintenance.",
+  "eligibility": {
+    "age_min": 18,
+    "age_max": 75,
+    "income_limit": null,
+    "occupation": "farmer",
+    "education": "",
+    "category": ""
+  },
+  "documents": [
+    "land record",
+    "Aadhaar card",
+    "PAN card / Form 60",
+    "bank account details"
+  ],
+  "application_url": "https://pmkisan.gov.in/KCC.aspx",
+  "deadline": "Ongoing",
+  "source_url": "https://myscheme.gov.in/schemes/kcc",
+  "last_verified": "2026-09-01"
+}

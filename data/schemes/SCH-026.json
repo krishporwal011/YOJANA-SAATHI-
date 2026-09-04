@@ -1,0 +1,23 @@
+{
+  "id": "SCH-026",
+  "scheme_name": "Pradhan Mantri Suraksha Bima Yojana (Salaried)",
+  "ministry": "Ministry of Finance",
+  "state": "All India",
+  "benefits": "Accidental death and full disability cover of Rs 2,00,000 at Rs 20/year for salaried workers.",
+  "eligibility": {
+    "age_min": 18,
+    "age_max": 70,
+    "income_limit": null,
+    "occupation": "salaried_employee",
+    "education": "",
+    "category": ""
+  },
+  "documents": [
+    "Aadhaar card",
+    "savings bank passbook"
+  ],
+  "application_url": "https://www.jansuraksha.gov.in/",
+  "deadline": "Ongoing",
+  "source_url": "https://www.jansuraksha.gov.in/",
+  "last_verified": "2026-09-01"
+}

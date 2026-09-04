@@ -1,0 +1,24 @@
+{
+  "id": "SCH-017",
+  "scheme_name": "Pradhan Mantri Shram Yogi Maandhan (PM-SYM)",
+  "ministry": "Ministry of Labour and Employment",
+  "state": "All India",
+  "benefits": "Assured monthly pension of Rs 3,000 after attaining 60 years of age for unorganized daily wage workers.",
+  "eligibility": {
+    "age_min": 18,
+    "age_max": 40,
+    "income_limit": 180000,
+    "occupation": "daily_wage_worker",
+    "education": "",
+    "category": ""
+  },
+  "documents": [
+    "Aadhaar card",
+    "savings bank account / Jan Dhan passbook",
+    "e-Shram card"
+  ],
+  "application_url": "https://maandhan.in/",
+  "deadline": "Ongoing",
+  "source_url": "https://maandhan.in/",
+  "last_verified": "2026-09-01"
+}

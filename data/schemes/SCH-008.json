@@ -1,0 +1,25 @@
+{
+  "id": "SCH-008",
+  "scheme_name": "PM YASASVI Scholarship Scheme",
+  "ministry": "Ministry of Social Justice and Empowerment",
+  "state": "All India",
+  "benefits": "Scholarship grant up to Rs 75,000/yr for Class 9-10 and Rs 1,25,000/yr for Class 11-12 students.",
+  "eligibility": {
+    "age_min": null,
+    "age_max": 18,
+    "income_limit": 250000,
+    "occupation": "student",
+    "education": "Class 8 or 10 passed",
+    "category": ""
+  },
+  "documents": [
+    "school mark sheet",
+    "income certificate",
+    "caste/category certificate",
+    "Aadhaar card"
+  ],
+  "application_url": "https://yet.nta.ac.in/",
+  "deadline": "2026-10-15",
+  "source_url": "https://yet.nta.ac.in/",
+  "last_verified": "2026-09-01"
+}

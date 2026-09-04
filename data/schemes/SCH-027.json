@@ -1,0 +1,24 @@
+{
+  "id": "SCH-027",
+  "scheme_name": "Pradhan Mantri Kaushal Vikas Yojana (PMKVY 4.0)",
+  "ministry": "Ministry of Skill Development and Entrepreneurship",
+  "state": "All India",
+  "benefits": "Free industry-relevant skill training, Government certification, stipend, and job placement assistance.",
+  "eligibility": {
+    "age_min": 15,
+    "age_max": 45,
+    "income_limit": null,
+    "occupation": "unemployed",
+    "education": "",
+    "category": ""
+  },
+  "documents": [
+    "Aadhaar card",
+    "bank passbook",
+    "educational mark sheet (if applicable)"
+  ],
+  "application_url": "https://www.pmkvyofficial.org/",
+  "deadline": "Ongoing",
+  "source_url": "https://www.pmkvyofficial.org/",
+  "last_verified": "2026-09-01"
+}

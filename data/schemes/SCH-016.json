@@ -1,0 +1,25 @@
+{
+  "id": "SCH-016",
+  "scheme_name": "MGNREGA (Rural Employment Guarantee)",
+  "ministry": "Ministry of Rural Development",
+  "state": "All India",
+  "benefits": "Guarantees at least 100 days of wage employment in a financial year to every rural household whose adult members volunteer to do unskilled manual work.",
+  "eligibility": {
+    "age_min": 18,
+    "age_max": null,
+    "income_limit": null,
+    "occupation": "daily_wage_worker",
+    "education": "",
+    "category": ""
+  },
+  "documents": [
+    "job card application",
+    "Aadhaar card",
+    "bank / post office passbook",
+    "passport size photograph"
+  ],
+  "application_url": "https://nrega.nic.in/",
+  "deadline": "Ongoing",
+  "source_url": "https://nrega.nic.in/",
+  "last_verified": "2026-09-01"
+}

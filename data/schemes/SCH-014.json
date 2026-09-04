@@ -1,0 +1,25 @@
+{
+  "id": "SCH-014",
+  "scheme_name": "Pradhan Mantri Mudra Yojana (Shishu & Kishore)",
+  "ministry": "Ministry of Finance",
+  "state": "All India",
+  "benefits": "Collateral-free business loans up to Rs 50,000 (Shishu) and up to Rs 5,00,000 (Kishore) for micro-enterprises and artisans.",
+  "eligibility": {
+    "age_min": 18,
+    "age_max": 65,
+    "income_limit": null,
+    "occupation": "artisan",
+    "education": "",
+    "category": ""
+  },
+  "documents": [
+    "identity proof",
+    "address proof",
+    "business proposal / proof of business",
+    "bank statement"
+  ],
+  "application_url": "https://www.mudra.org.in/",
+  "deadline": "Ongoing",
+  "source_url": "https://www.mudra.org.in/",
+  "last_verified": "2026-09-01"
+}

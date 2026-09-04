@@ -1,0 +1,25 @@
+{
+  "id": "SCH-005",
+  "scheme_name": "Pradhan Mantri Fasal Bima Yojana (PMFBY)",
+  "ministry": "Ministry of Agriculture and Farmers Welfare",
+  "state": "All India",
+  "benefits": "Comprehensive crop insurance coverage against non-preventable natural risks from pre-sowing to post-harvest with nominal premium (1.5% to 2%).",
+  "eligibility": {
+    "age_min": 18,
+    "age_max": null,
+    "income_limit": null,
+    "occupation": "farmer",
+    "education": "",
+    "category": ""
+  },
+  "documents": [
+    "land record",
+    "sowing certificate",
+    "bank passbook",
+    "Aadhaar card"
+  ],
+  "application_url": "https://pmfby.gov.in/",
+  "deadline": "Seasonal",
+  "source_url": "https://pmfby.gov.in/",
+  "last_verified": "2026-09-01"
+}

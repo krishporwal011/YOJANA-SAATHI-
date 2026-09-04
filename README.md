@@ -105,11 +105,28 @@ npm run dev
 
 ---
 
-## 🔑 Demo Credentials
+## 🔑 Credentials & Authentication Options
 
-To test the login authentication flow:
+### 1. Demo Phone Login
 - **Demo Phone Number**: `9000000001`
 - **Fixed Demo Code / OTP**: `1234`
+
+### 2. Google OAuth 2.0 Integration
+Yojana Saathi AI supports native Google OAuth authentication (`Continue with Google`).
+
+To configure Google OAuth 2.0:
+1. Go to the [Google Cloud Console](https://console.cloud.google.com/apis/credentials).
+2. Create an OAuth 2.0 Client ID (Web Application).
+3. Set Authorized JavaScript Origins: `http://localhost:3000`.
+4. Add environment variables to `app/frontend/.env.local`:
+   ```env
+   NEXT_PUBLIC_GOOGLE_CLIENT_ID=your_google_client_id_here
+   ```
+5. Add backend environment variables to `app/backend/api`:
+   ```env
+   GOOGLE_CLIENT_ID=your_google_client_id_here
+   GOOGLE_CLIENT_SECRET=your_google_client_secret_here
+   ```
 
 ---
 

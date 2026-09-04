@@ -1,0 +1,24 @@
+{
+  "id": "SCH-020",
+  "scheme_name": "PM SVANidhi (Street Vendor Micro-Credit Scheme)",
+  "ministry": "Ministry of Housing and Urban Affairs",
+  "state": "All India",
+  "benefits": "Micro-credit collateral-free working capital loan up to Rs 50,000 with 7% interest subsidy and cashback incentives on digital transactions.",
+  "eligibility": {
+    "age_min": 18,
+    "age_max": null,
+    "income_limit": null,
+    "occupation": "self_employed",
+    "education": "",
+    "category": ""
+  },
+  "documents": [
+    "Certificate of Vending / Identity Card",
+    "Aadhaar card",
+    "bank passbook"
+  ],
+  "application_url": "https://pmsvanidhi.mohua.gov.in/",
+  "deadline": "Ongoing",
+  "source_url": "https://pmsvanidhi.mohua.gov.in/",
+  "last_verified": "2026-09-01"
+}

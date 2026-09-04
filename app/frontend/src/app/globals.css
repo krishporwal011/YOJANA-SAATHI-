@@ -92,11 +92,8 @@ button { cursor:pointer; }
 .assistant-copy h3 { margin:5px 0 5px; color:#fff; font-size:21px; }
 .assistant-copy p { margin:0; max-width:700px; color:#b9c9e2; font-size:11px; line-height:1.6; }
 .assistant-card .primary-cta { background:#0868f5; border-color:#217dff; }
-.dashboard-footer { background:#031535; color:#9eb0ce; padding:20px 0; }
-.footer-grid { display:grid; grid-template-columns:1.5fr repeat(3,1fr); gap:18px; align-items:center; font-size:10px; }
-.footer-grid > div { display:flex; align-items:center; gap:7px; }
-.footer-grid strong { display:block; color:#fff; font-size:12px; }
-.footer-grid span { display:block; color:#8295b3; font-size:9px; margin-top:2px; }
+.dashboard-footer { background:#031535; color:#9eb0ce; padding:26px 0; border-top:1px solid rgba(255,255,255,.08); }
+.footer-container { display:flex; align-items:center; justify-content:space-between; gap:24px; font-size:11px; }
 
 /* Eligibility flow: only visible after clicking Eligibility Check */
 .workflow-page { min-height:100vh; color:var(--ink); background:linear-gradient(180deg,#03143a 0 155px,#eef4fb 155px 100%); }
@@ -146,8 +143,8 @@ button { cursor:pointer; }
 .profile-continue span { font-size:23px; line-height:1; margin-left:25px; }
 
 @media(max-width:1120px){ .dashboard-container,.workflow-shell{width:min(100% - 40px,1440px)} .brand{min-width:235px}.main-nav button{padding:0 8px}.secure-pill{display:none}.hero-grid{gap:25px}.hero-copy h2{font-size:42px}.stats-grid{grid-template-columns:repeat(2,1fr)} }
-@media(max-width:850px){ .dashboard-page{background:linear-gradient(180deg,#03143a 0%,#061e49 640px,#f4f8fd 640px)} .main-nav{display:none}.nav-right{margin-left:auto}.profile-pill{display:none}.hero-grid{grid-template-columns:1fr;padding:44px 0}.hero-visual{justify-content:flex-start}.hero-art{min-height:230px}.monument-art{right:0}.scheme-grid{grid-template-columns:1fr}.details-grid{grid-template-columns:1fr;gap:25px}.detail-column + .detail-column{border-left:0;border-top:1px solid #e4eaf2;padding-left:0;padding-top:25px}.profile-bottom{align-items:stretch;flex-direction:column}.profile-continue{width:100%}.workflow-card{padding:0 10px 10px}.field-grid{grid-template-columns:1fr}.footer-grid{grid-template-columns:1fr 1fr}.workflow-stepper{overflow-x:auto} }
-@media(max-width:540px){ .dashboard-container,.workflow-shell{width:calc(100% - 24px)} .nav-inner{min-height:68px}.brand strong{font-size:14px}.brand span{font-size:9px}.hero-copy h2{font-size:34px;letter-spacing:-1.1px}.hero-copy p{font-size:13px}.hero-actions{flex-direction:column}.hero-actions button{width:100%}.stats-grid{grid-template-columns:1fr}.section-heading{align-items:flex-start;flex-direction:column}.assistant-card{flex-direction:column;align-items:flex-start}.footer-grid{grid-template-columns:1fr}.profile-form{padding:24px 18px 20px}.profile-heading h2{font-size:23px}.workflow-stepper nav > div > div{min-width:170px !important} }
+@media(max-width:850px){ .dashboard-page{background:linear-gradient(180deg,#03143a 0%,#061e49 640px,#f4f8fd 640px)} .main-nav{display:none}.nav-right{margin-left:auto}.profile-pill{display:none}.hero-grid{grid-template-columns:1fr;padding:44px 0}.hero-visual{justify-content:flex-start}.hero-art{min-height:230px}.monument-art{right:0}.scheme-grid{grid-template-columns:1fr}.details-grid{grid-template-columns:1fr;gap:25px}.detail-column + .detail-column{border-left:0;border-top:1px solid #e4eaf2;padding-left:0;padding-top:25px}.profile-bottom{align-items:stretch;flex-direction:column}.profile-continue{width:100%}.workflow-card{padding:0 10px 10px}.field-grid{grid-template-columns:1fr}.footer-container{flex-direction:column;align-items:center;text-align:center;gap:16px}.workflow-stepper{overflow-x:auto} }
+@media(max-width:540px){ .dashboard-container,.workflow-shell{width:calc(100% - 24px)} .nav-inner{min-height:68px}.brand strong{font-size:14px}.brand span{font-size:9px}.hero-copy h2{font-size:34px;letter-spacing:-1.1px}.hero-copy p{font-size:13px}.hero-actions{flex-direction:column}.hero-actions button{width:100%}.stats-grid{grid-template-columns:1fr}.section-heading{align-items:flex-start;flex-direction:column}.assistant-card{flex-direction:column;align-items:flex-start}.footer-container{gap:14px}.profile-form{padding:24px 18px 20px}.profile-heading h2{font-size:23px}.workflow-stepper nav > div > div{min-width:170px !important} }
 
 .nav-help {
   display: inline-flex;

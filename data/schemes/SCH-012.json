@@ -1,0 +1,25 @@
+{
+  "id": "SCH-012",
+  "scheme_name": "PM Vishwakarma Yojana",
+  "ministry": "Ministry of Micro, Small and Medium Enterprises",
+  "state": "All India",
+  "benefits": "Collataral-free credit up to Rs 3,00,000 at 5% interest rate, skill training, tool kit incentive of Rs 15,000, and digital transaction incentives.",
+  "eligibility": {
+    "age_min": 18,
+    "age_max": null,
+    "income_limit": null,
+    "occupation": "artisan",
+    "education": "",
+    "category": ""
+  },
+  "documents": [
+    "Aadhaar card",
+    "bank passbook",
+    "skill / trade verification certificate",
+    "ration card"
+  ],
+  "application_url": "https://pmvishwakarma.gov.in/",
+  "deadline": "Ongoing",
+  "source_url": "https://pmvishwakarma.gov.in/",
+  "last_verified": "2026-09-01"
+}

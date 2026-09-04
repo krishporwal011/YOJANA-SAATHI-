@@ -1,0 +1,25 @@
+{
+  "id": "SCH-022",
+  "scheme_name": "Pradhan Mantri Mudra Yojana (Tarun Category)",
+  "ministry": "Ministry of Finance",
+  "state": "All India",
+  "benefits": "Collateral-free business loans between Rs 5,00,000 and Rs 10,00,000 for expanding established self-employed enterprises.",
+  "eligibility": {
+    "age_min": 18,
+    "age_max": 65,
+    "income_limit": null,
+    "occupation": "self_employed",
+    "education": "",
+    "category": ""
+  },
+  "documents": [
+    "business registration / GST certificate",
+    "last 2 years ITR / financial statements",
+    "Aadhaar card",
+    "PAN card"
+  ],
+  "application_url": "https://www.mudra.org.in/",
+  "deadline": "Ongoing",
+  "source_url": "https://www.mudra.org.in/",
+  "last_verified": "2026-09-01"
+}

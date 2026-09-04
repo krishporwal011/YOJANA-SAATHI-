@@ -1,0 +1,25 @@
+{
+  "id": "SCH-023",
+  "scheme_name": "Credit Guarantee Fund Trust for Micro and Small Enterprises (CGTMSE)",
+  "ministry": "Ministry of Micro, Small and Medium Enterprises",
+  "state": "All India",
+  "benefits": "Credit guarantee coverage up to 85% for collateral-free business loans up to Rs 5 crore to self-employed micro & small enterprises.",
+  "eligibility": {
+    "age_min": 18,
+    "age_max": null,
+    "income_limit": null,
+    "occupation": "self_employed",
+    "education": "",
+    "category": ""
+  },
+  "documents": [
+    "Udyam registration certificate",
+    "project report",
+    "bank loan application",
+    "Aadhaar card"
+  ],
+  "application_url": "https://www.cgtmse.in/",
+  "deadline": "Ongoing",
+  "source_url": "https://www.cgtmse.in/",
+  "last_verified": "2026-09-01"
+}

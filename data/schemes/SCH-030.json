@@ -1,0 +1,24 @@
+{
+  "id": "SCH-030",
+  "scheme_name": "National Career Service (NCS) Job Portal",
+  "ministry": "Ministry of Labour and Employment",
+  "state": "All India",
+  "benefits": "Free job matching, career counseling, vocational guidance, and skill assessment for job seekers across India.",
+  "eligibility": {
+    "age_min": 18,
+    "age_max": 60,
+    "income_limit": null,
+    "occupation": "unemployed",
+    "education": "",
+    "category": ""
+  },
+  "documents": [
+    "resume / qualification certificates",
+    "Aadhaar card",
+    "mobile number"
+  ],
+  "application_url": "https://www.ncs.gov.in/",
+  "deadline": "Ongoing",
+  "source_url": "https://www.ncs.gov.in/",
+  "last_verified": "2026-09-01"
+}

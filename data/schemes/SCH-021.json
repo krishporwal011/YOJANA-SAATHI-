@@ -1,0 +1,25 @@
+{
+  "id": "SCH-021",
+  "scheme_name": "Stand-Up India Scheme for Entrepreneurs",
+  "ministry": "Ministry of Finance",
+  "state": "All India",
+  "benefits": "Bank loans between Rs 10 lakh and Rs 1 crore to SC/ST and women entrepreneurs for setting up greenfield self-employed enterprises.",
+  "eligibility": {
+    "age_min": 18,
+    "age_max": null,
+    "income_limit": null,
+    "occupation": "self_employed",
+    "education": "",
+    "category": ""
+  },
+  "documents": [
+    "project plan",
+    "Aadhaar card",
+    "category certificate (SC/ST or Woman entrepreneur)",
+    "PAN card"
+  ],
+  "application_url": "https://www.standupmitra.in/",
+  "deadline": "Ongoing",
+  "source_url": "https://www.standupmitra.in/",
+  "last_verified": "2026-09-01"
+}

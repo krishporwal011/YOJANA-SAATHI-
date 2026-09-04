@@ -1,0 +1,24 @@
+{
+  "id": "SCH-015",
+  "scheme_name": "National Handicrafts Development Programme (NHDP)",
+  "ministry": "Ministry of Textiles",
+  "state": "All India",
+  "benefits": "Financial assistance for design development, infrastructure support, technology upgradation, and artisan marketing events.",
+  "eligibility": {
+    "age_min": 18,
+    "age_max": null,
+    "income_limit": null,
+    "occupation": "artisan",
+    "education": "",
+    "category": ""
+  },
+  "documents": [
+    "Pehchan artisan card",
+    "Aadhaar card",
+    "bank passbook"
+  ],
+  "application_url": "https://handicrafts.nic.in/",
+  "deadline": "Ongoing",
+  "source_url": "https://handicrafts.nic.in/",
+  "last_verified": "2026-09-01"
+}

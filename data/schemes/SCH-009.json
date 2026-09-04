@@ -1,0 +1,25 @@
+{
+  "id": "SCH-009",
+  "scheme_name": "Central Sector Scheme of Scholarship for College Students",
+  "ministry": "Ministry of Education",
+  "state": "All India",
+  "benefits": "Rs 12,000 per annum for graduation and Rs 20,000 per annum for post-graduation to meritorious college students.",
+  "eligibility": {
+    "age_min": 17,
+    "age_max": 25,
+    "income_limit": 450000,
+    "occupation": "student",
+    "education": "12th pass",
+    "category": ""
+  },
+  "documents": [
+    "12th mark sheet",
+    "income certificate",
+    "college fee receipt",
+    "bank passbook"
+  ],
+  "application_url": "https://scholarships.gov.in/",
+  "deadline": "2026-10-31",
+  "source_url": "https://scholarships.gov.in/",
+  "last_verified": "2026-09-01"
+}

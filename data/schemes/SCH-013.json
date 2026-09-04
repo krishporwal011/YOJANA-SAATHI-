@@ -1,0 +1,25 @@
+{
+  "id": "SCH-013",
+  "scheme_name": "Prime Minister Employment Generation Programme (PMEGP)",
+  "ministry": "Ministry of Micro, Small and Medium Enterprises",
+  "state": "All India",
+  "benefits": "Bank-financed subsidy scheme providing up to 35% margin money subsidy on micro-enterprise projects up to Rs 50 lakh.",
+  "eligibility": {
+    "age_min": 18,
+    "age_max": null,
+    "income_limit": null,
+    "occupation": "artisan",
+    "education": "8th pass for projects > 10L",
+    "category": ""
+  },
+  "documents": [
+    "project report",
+    "Aadhaar card",
+    "educational qualification certificate",
+    "special category certificate"
+  ],
+  "application_url": "https://www.kviconline.gov.in/pmegpeportal/",
+  "deadline": "Ongoing",
+  "source_url": "https://www.kviconline.gov.in/pmegpeportal/",
+  "last_verified": "2026-09-01"
+}

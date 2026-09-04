@@ -1,0 +1,25 @@
+{
+  "id": "SCH-028",
+  "scheme_name": "PM-DAKSH Yojana (Skill Development Scheme)",
+  "ministry": "Ministry of Social Justice and Empowerment",
+  "state": "All India",
+  "benefits": "Skill development training, monthly stipend of up to Rs 1,500/month during training, and placement support.",
+  "eligibility": {
+    "age_min": 18,
+    "age_max": 45,
+    "income_limit": 300000,
+    "occupation": "unemployed",
+    "education": "",
+    "category": ""
+  },
+  "documents": [
+    "caste / category certificate",
+    "income certificate",
+    "Aadhaar card",
+    "bank account details"
+  ],
+  "application_url": "https://pmdaksh.dosje.gov.in/",
+  "deadline": "Ongoing",
+  "source_url": "https://pmdaksh.dosje.gov.in/",
+  "last_verified": "2026-09-01"
+}

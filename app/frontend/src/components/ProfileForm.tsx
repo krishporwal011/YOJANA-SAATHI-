@@ -3,7 +3,8 @@
 import React, { useState } from "react";
 import FormField from "./FormField";
 import Button from "./Button";
-import { BadgeIndianRupee, BriefcaseBusiness, CalendarDays, GraduationCap, MapPin, UserRound, UsersRound, ShieldCheck } from "lucide-react";
+import OccupationSelect from "./OccupationSelect";
+import { BadgeIndianRupee, CalendarDays, GraduationCap, MapPin, UserRound, UsersRound, ShieldCheck } from "lucide-react";
 
 export interface UserProfileData {
   name: string;
@@ -34,9 +35,11 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({ initial = {}, onNext }
         <section className="detail-column">
           <div className="detail-heading"><UserRound size={18} /> PERSONAL DETAILS</div>
           <div className="field-grid">
-            <FormField label="Full Name"><div className="input-with-icon"><UserRound size={17}/><input required value={profile.name} onChange={(e) => update("name", e.target.value)} placeholder="e.g. Sita Devi" /></div></FormField>
+            <FormField label="Full Name"><div className="input-with-icon"><UserRound size={17}/><input required value={profile.name} onChange={(e) => update("name", e.target.value)} placeholder="e.g. Ramesh Kumar" /></div></FormField>
             <FormField label="Age"><div className="input-with-icon"><CalendarDays size={17}/><input required type="number" min={1} max={120} value={profile.age} onChange={(e) => update("age", e.target.value === "" ? "" : Number(e.target.value))} placeholder="e.g. 45" /></div></FormField>
-            <FormField label="Occupation"><div className="input-with-icon"><BriefcaseBusiness size={17}/><input required value={profile.occupation} onChange={(e) => update("occupation", e.target.value)} placeholder="e.g. Farmer" /></div></FormField>
+            <FormField label="Occupation (व्यवसाय)">
+              <OccupationSelect required value={profile.occupation} onChange={(val) => update("occupation", val)} />
+            </FormField>
             <FormField label="Education"><div className="input-with-icon"><GraduationCap size={17}/><select required value={profile.education} onChange={(e) => update("education", e.target.value)}><option value="">Select education</option><option>No Formal Education</option><option>Primary (Class 1-5)</option><option>Middle School (Class 6-8)</option><option>10th pass</option><option>12th pass (Higher Secondary)</option><option>Diploma / Vocational</option><option>Graduate (Bachelor's)</option><option>Post Graduate & Above</option></select></div></FormField>
           </div>
         </section>

@@ -1,0 +1,25 @@
+{
+  "id": "SCH-011",
+  "scheme_name": "Pre-Matric Scholarship Scheme",
+  "ministry": "Ministry of Minority Affairs / Social Justice",
+  "state": "All India",
+  "benefits": "Financial assistance of up to Rs 3,500/yr for school fee, books, and hostel maintenance allowance.",
+  "eligibility": {
+    "age_min": 6,
+    "age_max": 16,
+    "income_limit": 200000,
+    "occupation": "student",
+    "education": "Class 1 to 10",
+    "category": ""
+  },
+  "documents": [
+    "previous year mark sheet",
+    "income certificate",
+    "school bonafide certificate",
+    "bank passbook"
+  ],
+  "application_url": "https://scholarships.gov.in/",
+  "deadline": "2026-10-31",
+  "source_url": "https://scholarships.gov.in/",
+  "last_verified": "2026-09-01"
+}

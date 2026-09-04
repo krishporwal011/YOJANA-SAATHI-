@@ -14,6 +14,12 @@ class LoginResponse(BaseModel):
     token: Optional[str] = None
 
 
+class GoogleLoginRequest(BaseModel):
+    token: str = Field(..., description="Google ID token or session token")
+    email: Optional[str] = Field("citizen.google@gmail.com", description="User Google email")
+    name: Optional[str] = Field("Google Citizen", description="User Google name")
+
+
 class UserProfile(BaseModel):
     name: str = Field("", description="Citizen full name")
     age: Optional[int] = Field(None, description="Citizen age in years")

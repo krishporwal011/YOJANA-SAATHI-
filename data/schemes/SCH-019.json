@@ -1,0 +1,23 @@
+{
+  "id": "SCH-019",
+  "scheme_name": "Pradhan Mantri Jeevan Jyoti Bima Yojana (PMJJBY)",
+  "ministry": "Ministry of Finance",
+  "state": "All India",
+  "benefits": "Life insurance cover of Rs 2,00,000 for death due to any cause at an annual premium of Rs 436.",
+  "eligibility": {
+    "age_min": 18,
+    "age_max": 50,
+    "income_limit": null,
+    "occupation": "daily_wage_worker",
+    "education": "",
+    "category": ""
+  },
+  "documents": [
+    "Aadhaar card",
+    "savings bank passbook"
+  ],
+  "application_url": "https://www.jansuraksha.gov.in/",
+  "deadline": "Ongoing",
+  "source_url": "https://www.jansuraksha.gov.in/",
+  "last_verified": "2026-09-01"
+}

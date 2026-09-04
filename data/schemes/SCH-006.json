@@ -1,0 +1,25 @@
+{
+  "id": "SCH-006",
+  "scheme_name": "PM-KUSUM (Solar Pump Scheme)",
+  "ministry": "Ministry of New and Renewable Energy",
+  "state": "All India",
+  "benefits": "Up to 60% subsidy for setting up standalone solar pumps and solarization of existing grid-connected agricultural pumps.",
+  "eligibility": {
+    "age_min": 18,
+    "age_max": null,
+    "income_limit": null,
+    "occupation": "farmer",
+    "education": "",
+    "category": ""
+  },
+  "documents": [
+    "land possession certificate",
+    "Aadhaar card",
+    "bank passbook",
+    "electricity bill (if grid connected)"
+  ],
+  "application_url": "https://pmkusum.mnre.gov.in/",
+  "deadline": "Ongoing",
+  "source_url": "https://pmkusum.mnre.gov.in/",
+  "last_verified": "2026-09-01"
+}
