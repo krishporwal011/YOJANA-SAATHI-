@@ -168,3 +168,31 @@ button { cursor:pointer; }
   object-fit: cover;
   flex-shrink: 0;
 }
+
+/* Fix invisible workflow action buttons */
+.workflow-card button {
+  color: #0868ff !important;
+}
+
+/* Primary action buttons */
+.workflow-card button:not([class*="border-slate-300"]) {
+  background: #0868ff !important;
+  border-color: #0868ff !important;
+  color: #ffffff !important;
+  opacity: 1 !important;
+}
+
+/* Disabled buttons were appearing as white boxes */
+.workflow-card button:disabled {
+  background: #0868ff !important;
+  border-color: #0868ff !important;
+  color: #ffffff !important;
+  opacity: 1 !important;
+}
+
+/* Hover */
+.workflow-card button:not(:disabled):hover {
+  background: #0868ff !important;
+  border-color: #0752cc !important;
+  color: #ffffff !important;
+}

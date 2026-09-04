@@ -446,3 +446,4 @@ export const ResultsScreen: React.FC<ResultsProps> = ({
 };
 
 export default ResultsScreen;
+
