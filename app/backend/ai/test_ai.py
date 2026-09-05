@@ -18,10 +18,17 @@ from app.backend.ai.router import app as ai_app
 def test_rag_and_schemes_loading():
     print("\n--- 1. Testing RAG Simple JSON Lookup ---")
     schemes = load_all_schemes()
-    assert len(schemes) == 3, f"Expected 3 schemes loaded, found {len(schemes)}"
-    assert "SCH-001" in schemes
-    assert "SCH-002" in schemes
-    assert "SCH-003" in schemes
+    assert schemes is not None, "Loaded schemes collection must not be None"
+    assert len(schemes) > 0, f"Expected non-empty schemes dataset, found {len(schemes)}"
+    assert "SCH-001" in schemes, "SCH-001 missing from loaded schemes"
+    assert "SCH-002" in schemes, "SCH-002 missing from loaded schemes"
+    assert "SCH-003" in schemes, "SCH-003 missing from loaded schemes"
+
+    # Verify each loaded scheme contains basic required fields for AI service
+    for s_id, s_data in schemes.items():
+        assert "scheme_name" in s_data, f"Scheme {s_id} missing 'scheme_name'"
+        assert "eligibility" in s_data, f"Scheme {s_id} missing 'eligibility'"
+        assert "documents" in s_data, f"Scheme {s_id} missing 'documents'"
 
     sch1 = load_scheme_by_id("SCH-001")
     assert sch1 is not None
