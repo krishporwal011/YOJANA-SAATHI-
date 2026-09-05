@@ -36,8 +36,9 @@ def load_scheme_by_id(scheme_id: str) -> Optional[Dict[str, Any]]:
         try:
             with open(scheme_file, "r", encoding="utf-8") as f:
                 data = json.load(f)
-                data["scheme_id"] = scheme_file.stem
-                return data
+                if isinstance(data, dict):
+                    data["scheme_id"] = scheme_file.stem
+                    return data
         except Exception:
             return None
 
@@ -47,8 +48,9 @@ def load_scheme_by_id(scheme_id: str) -> Optional[Dict[str, Any]]:
             try:
                 with open(file, "r", encoding="utf-8") as f:
                     data = json.load(f)
-                    data["scheme_id"] = file.stem
-                    return data
+                    if isinstance(data, dict):
+                        data["scheme_id"] = file.stem
+                        return data
             except Exception:
                 pass
 
@@ -68,8 +70,9 @@ def load_all_schemes() -> Dict[str, Dict[str, Any]]:
             try:
                 with open(file, "r", encoding="utf-8") as f:
                     data = json.load(f)
-                    data["scheme_id"] = scheme_id
-                    schemes[scheme_id] = data
+                    if isinstance(data, dict):
+                        data["scheme_id"] = scheme_id
+                        schemes[scheme_id] = data
             except Exception:
                 pass
 

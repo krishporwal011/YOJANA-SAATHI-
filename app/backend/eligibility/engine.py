@@ -67,7 +67,9 @@ def load_starter_schemes() -> Dict[str, dict]:
             scheme_id = file.stem  # SCH-001, SCH-002, etc.
             try:
                 with open(file, "r", encoding="utf-8") as f:
-                    schemes[scheme_id] = json.load(f)
+                    data = json.load(f)
+                    if isinstance(data, dict):
+                        schemes[scheme_id] = data
             except Exception:
                 pass
     return schemes
@@ -88,6 +90,9 @@ def evaluate_scheme(scheme_id: str, scheme_data: dict, profile: CitizenProfileIn
     - NEEDS VERIFICATION: All criteria pass, but a required document is missing/unconfirmed.
     - MATCH: All criteria pass and no required document is missing/unconfirmed.
     """
+    if not isinstance(scheme_data, dict):
+        scheme_data = {}
+
     scheme_name = scheme_data.get("scheme_name", scheme_id)
     eligibility_spec = scheme_data.get("eligibility", {})
     required_docs = scheme_data.get("documents", [])

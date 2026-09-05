@@ -150,11 +150,12 @@ def list_starter_schemes() -> List[Dict[str, Any]]:
             try:
                 with open(file, "r", encoding="utf-8") as f:
                     data = json.load(f)
-                    if "id" not in data or not data["id"]:
-                        data["id"] = file.stem
-                    schemes.append(data)
-            except Exception as e:
-                schemes.append({"error": f"Failed to load {file.name}: {str(e)}"})
+                    if isinstance(data, dict):
+                        if "id" not in data or not data["id"]:
+                            data["id"] = file.stem
+                        schemes.append(data)
+            except Exception:
+                pass
 
     return schemes
 

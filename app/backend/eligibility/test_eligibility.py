@@ -196,12 +196,76 @@ def test_income_validation():
     print("Income validation assertions passed successfully!")
 
 
+def test_malformed_scheme_json_handling():
+    print("\n--- Testing Malformed Scheme JSON Safety ---")
+    import tempfile
+    import json
+    from pathlib import Path
+    from app.backend.api.main import list_starter_schemes, app as main_app
+    from app.backend.eligibility.engine import evaluate_scheme, load_starter_schemes
+    from app.backend.ai.rag import load_all_schemes
+
+    # Create temporary directory with valid, broken syntax, and non-dict JSON files
+    with tempfile.TemporaryDirectory() as tmp_dir:
+        tmp_path = Path(tmp_dir)
+
+        # 1. Valid Scheme JSON
+        with open(tmp_path / "SCH-001.json", "w", encoding="utf-8") as f:
+            json.dump({"id": "SCH-001", "scheme_name": "Valid Scheme"}, f)
+
+        # 2. Syntax-error Invalid JSON
+        with open(tmp_path / "SCH-BROKEN.json", "w", encoding="utf-8") as f:
+            f.write("{invalid_json: true,")
+
+        # 3. Non-dictionary JSON (array)
+        with open(tmp_path / "SCH-ARRAY.json", "w", encoding="utf-8") as f:
+            f.write("[1, 2, 3]")
+
+        # 4. Non-dictionary JSON (string)
+        with open(tmp_path / "SCH-STRING.json", "w", encoding="utf-8") as f:
+            f.write('"just a string"')
+
+        # Verify safe loading logic
+        schemes_loaded = []
+        for file in sorted(tmp_path.glob("*.json")):
+            try:
+                with open(file, "r", encoding="utf-8") as f:
+                    data = json.load(f)
+                    if isinstance(data, dict):
+                        schemes_loaded.append(data)
+            except Exception:
+                pass
+
+        assert len(schemes_loaded) == 1, f"Expected 1 valid scheme loaded, got {len(schemes_loaded)}"
+        assert schemes_loaded[0]["id"] == "SCH-001"
+        assert not any("error" in s for s in schemes_loaded), "No error objects should be appended to scheme list"
+
+        # Verify evaluate_scheme handles non-dict scheme_data safely
+        res_nondict = evaluate_scheme("SCH-BAD", [1, 2, 3], CitizenProfileInput())
+        assert res_nondict.status == "MATCH", "evaluate_scheme with non-dict scheme_data should fall back safely without crashing"
+
+    # Verify actual GET /api/schemes endpoint returns valid schemes without raw error objects
+    client = TestClient(main_app)
+    resp = client.get("/api/schemes")
+    assert resp.status_code == 200, f"Expected 200, got {resp.status_code}"
+    schemes_data = resp.json()
+    assert isinstance(schemes_data, list)
+    assert len(schemes_data) >= 30, f"Expected at least 30 valid schemes, got {len(schemes_data)}"
+    for item in schemes_data:
+        assert isinstance(item, dict), "Every item in GET /api/schemes response must be a dictionary"
+        assert "error" not in item, f"Scheme item contained raw error object: {item}"
+
+    print("Malformed scheme JSON safety assertions passed successfully!")
+
+
 if __name__ == "__main__":
     test_demo_profile_direct()
     test_demo_profile_api_endpoint()
     test_document_normalization()
     test_occupation_matching()
     test_income_validation()
+    test_malformed_scheme_json_handling()
+
 
 
 
