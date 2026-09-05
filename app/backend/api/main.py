@@ -9,6 +9,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 from .schemas import LoginRequest, LoginResponse, GoogleLoginRequest, UserProfile, ProfileResponse
+from app.backend.eligibility.router import router as eligibility_router
+from app.backend.ai.router import router as ai_router
 
 app = FastAPI(
     title="Yojana Saathi API",
@@ -24,6 +26,11 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.include_router(eligibility_router)
+app.include_router(ai_router)
+
+
 
 # In-memory storage for user profiles (keyed by phone)
 PROFILES_DB: Dict[str, UserProfile] = {
