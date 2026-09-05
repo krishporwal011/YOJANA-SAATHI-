@@ -80,6 +80,45 @@ def test_demo_profile_api_endpoint():
     print("API endpoint assertions passed successfully!")
 
 
+def test_document_normalization():
+    print("\n--- Testing Document Normalization & Matching ---")
+    from app.backend.eligibility.engine import normalize_document_name, evaluate_scheme
+    
+    # 1. "bank passbook" satisfying "savings bank passbook"
+    doc_req1 = "savings bank passbook"
+    confirmed_docs1 = ["land record", "bank passbook"]
+    norm_confirmed1 = {normalize_document_name(d) for d in confirmed_docs1}
+    assert normalize_document_name(doc_req1) in norm_confirmed1, "'bank passbook' should satisfy 'savings bank passbook'"
+
+    # 2. "bank passbook" satisfying "bank / post office passbook"
+    doc_req2 = "bank / post office passbook"
+    assert normalize_document_name(doc_req2) in norm_confirmed1, "'bank passbook' should satisfy 'bank / post office passbook'"
+
+    # 3. "caste / category certificate" satisfying "caste/category certificate"
+    doc_req3 = "caste/category certificate"
+    confirmed_docs3 = ["caste / category certificate", "bank passbook"]
+    norm_confirmed3 = {normalize_document_name(d) for d in confirmed_docs3}
+    assert normalize_document_name(doc_req3) in norm_confirmed3, "'caste / category certificate' should satisfy 'caste/category certificate'"
+
+    # 4. An actually missing document producing NEEDS VERIFICATION
+    dummy_scheme = {
+        "scheme_name": "Test Scheme",
+        "eligibility": {"age_min": 18},
+        "documents": ["land record", "income certificate"]
+    }
+    profile_missing_doc = CitizenProfileInput(
+        age=25,
+        confirmed_documents=["land record", "bank passbook"]
+    )
+    res = evaluate_scheme("TEST-001", dummy_scheme, profile_missing_doc)
+    assert res.status == "NEEDS VERIFICATION", f"Expected NEEDS VERIFICATION, got {res.status}"
+    assert "income certificate" in res.missing_documents, "missing_documents should contain 'income certificate'"
+
+    print("Document normalization & matching assertions passed successfully!")
+
+
 if __name__ == "__main__":
     test_demo_profile_direct()
     test_demo_profile_api_endpoint()
+    test_document_normalization()
+

@@ -1,8 +1,34 @@
 import os
 import json
+import re
 from pathlib import Path
 from typing import Dict, List, Any
 from .schemas import CitizenProfileInput, CriterionResult, SchemeEligibilityResult
+
+
+def normalize_document_name(doc: str) -> str:
+    """
+    Normalizes a document name for comparison:
+    - Lowercases and strips whitespace
+    - Replaces punctuation (/ , - ( ) .) with single spaces
+    - Maps known naming variants (bank passbooks, caste certificates) to canonical keys
+    """
+    if not doc:
+        return ""
+    d = doc.lower().strip()
+    # Normalize punctuation differences like "/", "-", "(", ")" into single spaces
+    d = re.sub(r"[/\-(),.]", " ", d)
+    d = re.sub(r"\s+", " ", d).strip()
+
+    # Known bank passbook / account variants
+    if "bank passbook" in d or "passbook" in d or d in {"bank account details", "savings bank account"}:
+        return "bank passbook"
+
+    # Known caste / category certificate variants
+    if ("caste" in d and "category" in d) or "category certificate" in d or "caste certificate" in d:
+        return "caste category certificate"
+
+    return d
 
 
 def load_starter_schemes() -> Dict[str, dict]:
@@ -50,9 +76,9 @@ def evaluate_scheme(scheme_id: str, scheme_data: dict, profile: CitizenProfileIn
     eligibility_spec = scheme_data.get("eligibility", {})
     required_docs = scheme_data.get("documents", [])
 
-    confirmed_docs_lower = [
-        doc.strip().lower() for doc in (profile.confirmed_documents or [])
-    ]
+    confirmed_docs_normalized = {
+        normalize_document_name(doc) for doc in (profile.confirmed_documents or [])
+    }
 
     criteria_results: List[CriterionResult] = []
     failed_criteria: List[CriterionResult] = []
@@ -222,7 +248,7 @@ def evaluate_scheme(scheme_id: str, scheme_data: dict, profile: CitizenProfileIn
     else:
         missing_docs = []
         for req_doc in required_docs:
-            if req_doc.strip().lower() not in confirmed_docs_lower:
+            if normalize_document_name(req_doc) not in confirmed_docs_normalized:
                 missing_docs.append(req_doc)
 
         if missing_docs:
