@@ -211,13 +211,54 @@ def test_ai_chat_endpoint_error_handling():
     print("POST /api/ai/chat error handling assertions passed successfully!")
 
 
+def test_invalid_scheme_id_explain_endpoint():
+    print("\n--- 6. Testing Invalid Scheme ID Handling on /api/ai/explain ---")
+    client = TestClient(ai_app)
+
+    # 1. Non-existent scheme_id SCH-999 returns HTTP 404
+    payload_invalid = {
+        "scheme_id": "SCH-999",
+        "profile": {"age": 30, "occupation": "farmer"},
+        "eligibility_result": {"scheme_id": "SCH-999", "status": "MATCH"}
+    }
+    resp_404 = client.post("/api/ai/explain", json=payload_invalid)
+    assert resp_404.status_code == 404, f"Expected 404 for SCH-999, got {resp_404.status_code}"
+    err_msg = resp_404.json().get("detail", "")
+    assert "SCH-999" in err_msg
+    assert "not found in canonical scheme records" in err_msg
+    assert "guidance" not in resp_404.json(), "Response must not contain fabricated guidance"
+
+    # 2. Non-existent scheme_id SCH-888 returns HTTP 404
+    payload_invalid_nested = {
+        "scheme_id": "SCH-888",
+        "profile": {"age": 30},
+        "eligibility_result": {"scheme_id": "SCH-888", "status": "MATCH"}
+    }
+    resp_404_nested = client.post("/api/ai/explain", json=payload_invalid_nested)
+    assert resp_404_nested.status_code == 404, f"Expected 404 for SCH-888, got {resp_404_nested.status_code}"
+
+    # 3. Valid scheme_id SCH-001 still returns HTTP 200 and guidance
+    payload_valid = {
+        "scheme_id": "SCH-001",
+        "profile": {"age": 45, "occupation": "farmer"},
+        "eligibility_result": {"scheme_id": "SCH-001", "status": "MATCH"}
+    }
+    resp_200 = client.post("/api/ai/explain", json=payload_valid)
+    assert resp_200.status_code == 200, f"Expected 200 for SCH-001, got {resp_200.status_code}"
+    assert resp_200.json()["guidance"]["scheme_id"] == "SCH-001"
+
+    print("Invalid Scheme ID 404 assertions passed successfully!")
+
+
 if __name__ == "__main__":
     test_rag_and_schemes_loading()
     test_document_gap_analysis()
     test_three_core_scenarios()
     test_ai_fastapi_endpoints()
     test_ai_chat_endpoint_error_handling()
+    test_invalid_scheme_id_explain_endpoint()
     print("\n==========================================")
     print("ALL PERSON C AI MODULE TESTS PASSED (100%)")
     print("==========================================")
+
 

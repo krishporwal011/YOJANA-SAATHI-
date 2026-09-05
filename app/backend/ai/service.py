@@ -40,10 +40,16 @@ def generate_ai_guidance(
     prof_dict = _extract_dict(profile)
     res_dict = _extract_dict(eligibility_result)
 
-    target_id = scheme_id or res_dict.get("scheme_id") or "SCH-001"
+    target_id = scheme_id or res_dict.get("scheme_id")
+    if not target_id:
+        raise ValueError("Scheme ID must be specified.")
     
     # 1. RAG Context: Fetch scheme ground truth from JSON
-    scheme_data = load_scheme_by_id(target_id) or {}
+    raw_scheme_data = load_scheme_by_id(target_id)
+    if raw_scheme_data is None:
+        raise ValueError(f"Scheme '{target_id}' not found in canonical scheme records.")
+
+    scheme_data = raw_scheme_data
     scheme_name = (
         scheme_data.get("scheme_name") 
         or res_dict.get("scheme_name") 

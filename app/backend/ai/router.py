@@ -1,4 +1,4 @@
-from fastapi import APIRouter, FastAPI
+from fastapi import APIRouter, FastAPI, HTTPException, status
 from typing import List, Dict, Any
 from .schemas import (
     AIExplanationRequest,
@@ -16,11 +16,17 @@ def explain_scheme_endpoint(request: AIExplanationRequest):
     """
     Generate grounded AI explanation, document gap analysis, and action roadmap for a single scheme.
     """
-    guidance = generate_ai_guidance(
-        profile=request.profile,
-        eligibility_result=request.eligibility_result,
-        scheme_id=request.scheme_id,
-    )
+    try:
+        guidance = generate_ai_guidance(
+            profile=request.profile,
+            eligibility_result=request.eligibility_result,
+            scheme_id=request.scheme_id,
+        )
+    except ValueError as e:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=str(e),
+        )
     return AIExplanationResponse(
         success=True,
         message="AI explanation and roadmap generated successfully.",
