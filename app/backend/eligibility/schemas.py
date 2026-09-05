@@ -4,7 +4,7 @@ from pydantic import BaseModel, Field, field_validator
 
 class CitizenProfileInput(BaseModel):
     age: Optional[int] = Field(None, description="Citizen age in years")
-    income: Optional[float] = Field(None, description="Annual family income in INR")
+    income: Optional[float] = Field(None, ge=0, description="Annual family income in INR")
     state: Optional[str] = Field("", description="State / UT of residence")
     occupation: Optional[str] = Field("", description="Current primary occupation")
     category: Optional[str] = Field("", description="Social category (General, OBC, SC, ST, EWS)")
@@ -13,6 +13,12 @@ class CitizenProfileInput(BaseModel):
         default_factory=lambda: ["land record", "bank passbook", "ration card"],
         description="List of confirmed/uploaded documents for verification"
     )
+
+    @field_validator("income")
+    def validate_income(cls, v):
+        if v is not None and v < 0:
+            raise ValueError("Income must be greater than or equal to 0.")
+        return v
 
     @field_validator("confirmed_documents", mode="before")
     def default_documents_if_none(cls, v):

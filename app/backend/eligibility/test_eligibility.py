@@ -157,10 +157,51 @@ def test_occupation_matching():
     print("Occupation normalization & exact matching assertions passed successfully!")
 
 
+def test_income_validation():
+    print("\n--- Testing Income Validation ---")
+    from pydantic import ValidationError
+
+    # 1. income=None is accepted
+    p_none = CitizenProfileInput(income=None)
+    assert p_none.income is None, "income=None should be accepted"
+
+    # 2. income=0 is accepted
+    p_zero = CitizenProfileInput(income=0)
+    assert p_zero.income == 0, "income=0 should be accepted"
+
+    # 3. Normal positive income is accepted
+    p_positive = CitizenProfileInput(income=180000.0)
+    assert p_positive.income == 180000.0, "positive income should be accepted"
+
+    # 4. Negative income is rejected by Pydantic schema validation
+    try:
+        CitizenProfileInput(income=-50000)
+        assert False, "Negative income should have raised a ValidationError"
+    except ValidationError:
+        pass
+
+    # 5. FastAPI endpoint returns HTTP 422 for negative income
+    client = TestClient(app)
+    payload_neg = {"age": 30, "income": -50000, "occupation": "farmer"}
+    resp_neg = client.post("/api/eligibility/check", json=payload_neg)
+    assert resp_neg.status_code == 422, f"Expected HTTP 422 for negative income, got {resp_neg.status_code}"
+
+    # 6. FastAPI endpoint accepts income=0, income=None, income=180000
+    resp_zero = client.post("/api/eligibility/check", json={"income": 0})
+    assert resp_zero.status_code == 200, f"Expected HTTP 200 for income=0, got {resp_zero.status_code}"
+
+    resp_none = client.post("/api/eligibility/check", json={"income": None})
+    assert resp_none.status_code == 200, f"Expected HTTP 200 for income=None, got {resp_none.status_code}"
+
+    print("Income validation assertions passed successfully!")
+
+
 if __name__ == "__main__":
     test_demo_profile_direct()
     test_demo_profile_api_endpoint()
     test_document_normalization()
     test_occupation_matching()
+    test_income_validation()
+
 
 
