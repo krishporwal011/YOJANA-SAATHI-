@@ -31,6 +31,22 @@ def normalize_document_name(doc: str) -> str:
     return d
 
 
+def normalize_occupation(occ: str) -> str:
+    """
+    Normalizes an occupation string for exact comparison:
+    - Lowercase
+    - Trim leading/trailing whitespace
+    - Replace spaces and hyphens with underscores
+    - Collapse multiple spaces/underscores
+    """
+    if not occ:
+        return ""
+    o = str(occ).strip().lower()
+    o = re.sub(r"[\s\-]+", "_", o)
+    return o
+
+
+
 def load_starter_schemes() -> Dict[str, dict]:
     """
     Reads the existing scheme JSON files from data/schemes.
@@ -161,15 +177,15 @@ def evaluate_scheme(scheme_id: str, scheme_data: dict, profile: CitizenProfileIn
     # 4. occupation criterion
     target_occ = eligibility_spec.get("occupation")
     if target_occ is not None and str(target_occ).strip() != "":
-        target_occ_str = str(target_occ).strip().lower()
-        prof_occ_str = (profile.occupation or "").strip().lower()
-        if not prof_occ_str:
+        norm_target_occ = normalize_occupation(target_occ)
+        norm_prof_occ = normalize_occupation(profile.occupation or "")
+        if not norm_prof_occ:
             res = CriterionResult(
                 criterion="occupation",
                 passed=False,
                 details=f"occupation not specified in profile (required: '{target_occ}')"
             )
-        elif prof_occ_str != target_occ_str and target_occ_str not in prof_occ_str:
+        elif norm_prof_occ != norm_target_occ:
             res = CriterionResult(
                 criterion="occupation",
                 passed=False,

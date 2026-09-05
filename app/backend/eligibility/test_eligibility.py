@@ -117,8 +117,50 @@ def test_document_normalization():
     print("Document normalization & matching assertions passed successfully!")
 
 
+def test_occupation_matching():
+    print("\n--- Testing Occupation Normalization & Exact Matching ---")
+    from app.backend.eligibility.engine import normalize_occupation, evaluate_scheme
+
+    # 1. "farmer" matches scheme occupation "farmer"
+    scheme_farmer = {"scheme_name": "Farmer Scheme", "eligibility": {"occupation": "farmer"}, "documents": []}
+    prof_farmer = CitizenProfileInput(occupation="farmer")
+    res1 = evaluate_scheme("TEST-F1", scheme_farmer, prof_farmer)
+    assert res1.status == "MATCH", f"Expected MATCH for 'farmer', got {res1.status}"
+
+    # 2. " Farmer " still matches "farmer"
+    prof_farmer_spaces = CitizenProfileInput(occupation=" Farmer ")
+    res2 = evaluate_scheme("TEST-F2", scheme_farmer, prof_farmer_spaces)
+    assert res2.status == "MATCH", f"Expected MATCH for ' Farmer ', got {res2.status}"
+
+    # 3. "daily wage worker" normalizes to canonical "daily_wage_worker"
+    assert normalize_occupation("daily wage worker") == "daily_wage_worker"
+    scheme_dww = {"scheme_name": "DWW Scheme", "eligibility": {"occupation": "daily_wage_worker"}, "documents": []}
+    prof_dww = CitizenProfileInput(occupation="daily wage worker")
+    res3 = evaluate_scheme("TEST-DWW", scheme_dww, prof_dww)
+    assert res3.status == "MATCH", f"Expected MATCH for 'daily wage worker', got {res3.status}"
+
+    # 4. Unrelated occupation does NOT match merely because one string contains the other
+    prof_unrelated = CitizenProfileInput(occupation="farmer_manager")
+    res4 = evaluate_scheme("TEST-F3", scheme_farmer, prof_unrelated)
+    assert res4.status == "NOT MATCHED", f"Expected NOT MATCHED for 'farmer_manager', got {res4.status}"
+
+    prof_unrelated2 = CitizenProfileInput(occupation="farm")
+    res5 = evaluate_scheme("TEST-F4", scheme_farmer, prof_unrelated2)
+    assert res5.status == "NOT MATCHED", f"Expected NOT MATCHED for 'farm', got {res5.status}"
+
+    # 5. Scheme with empty occupation ("") remains eligible for occupation
+    scheme_empty_occ = {"scheme_name": "Ayushman Bharat", "eligibility": {"occupation": ""}, "documents": []}
+    prof_any = CitizenProfileInput(occupation="anything")
+    res6 = evaluate_scheme("TEST-EMP", scheme_empty_occ, prof_any)
+    assert res6.status == "MATCH", f"Expected MATCH for scheme with empty occupation, got {res6.status}"
+
+    print("Occupation normalization & exact matching assertions passed successfully!")
+
+
 if __name__ == "__main__":
     test_demo_profile_direct()
     test_demo_profile_api_endpoint()
     test_document_normalization()
+    test_occupation_matching()
+
 
