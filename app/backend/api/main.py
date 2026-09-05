@@ -216,11 +216,11 @@ def ai_chat(req: ChatRequest):
             if not reply_text:
                 reply_text = "Thank you for your question. Please verify criteria on the official portal."
             return {"reply": reply_text, "offline": False}
-    except Exception as e:
-        return {
-            "reply": "Sorry, I could not complete the live AI request. Please check your network connection or verify criteria using the Eligibility Check tool.",
-            "error": str(e)
-        }
+    except Exception:
+        raise HTTPException(
+            status_code=status.HTTP_502_BAD_GATEWAY,
+            detail="The AI guidance service is temporarily unavailable. Please try again later or use the deterministic Eligibility Check tool."
+        )
 
 
 if __name__ == "__main__":

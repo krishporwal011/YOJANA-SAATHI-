@@ -180,11 +180,44 @@ def test_ai_fastapi_endpoints():
     print("FastAPI AI endpoint assertions passed successfully!")
 
 
+def test_ai_chat_endpoint_error_handling():
+    print("\n--- 5. Testing POST /api/ai/chat Error Handling ---")
+    from app.backend.api.main import app as main_app
+    from unittest.mock import patch
+    import os
+
+    main_client = TestClient(main_app)
+
+    # 1. Empty message returns HTTP 400
+    res_empty = main_client.post("/api/ai/chat", json={"message": "   "})
+    assert res_empty.status_code == 400, f"Expected 400 for empty message, got {res_empty.status_code}"
+    assert "Message cannot be empty" in res_empty.json()["detail"]
+
+    # 2. Successful offline / online mode AI chat returns HTTP 200
+    res_valid = main_client.post("/api/ai/chat", json={"message": "What is PM-KISAN?"})
+    assert res_valid.status_code == 200, f"Expected 200 for valid message, got {res_valid.status_code}"
+    assert "reply" in res_valid.json()
+
+    # 3. AI service exception (e.g., urllib error when GEMINI_API_KEY is present) results in HTTP 502
+    with patch.dict(os.environ, {"GEMINI_API_KEY": "test_fake_api_key"}):
+        with patch("urllib.request.urlopen", side_effect=Exception("Internal Socket Error: Connection Reset")):
+            res_error = main_client.post("/api/ai/chat", json={"message": "What is PM-KISAN?"})
+            assert res_error.status_code == 502, f"Expected 502 Bad Gateway, got {res_error.status_code}"
+            err_detail = res_error.json().get("detail", "")
+            assert "The AI guidance service is temporarily unavailable" in err_detail
+            assert "Internal Socket Error" not in err_detail, "Raw exception message must not be exposed to client"
+            assert "Connection Reset" not in err_detail, "Raw exception message must not be exposed to client"
+
+    print("POST /api/ai/chat error handling assertions passed successfully!")
+
+
 if __name__ == "__main__":
     test_rag_and_schemes_loading()
     test_document_gap_analysis()
     test_three_core_scenarios()
     test_ai_fastapi_endpoints()
+    test_ai_chat_endpoint_error_handling()
     print("\n==========================================")
     print("ALL PERSON C AI MODULE TESTS PASSED (100%)")
     print("==========================================")
+
