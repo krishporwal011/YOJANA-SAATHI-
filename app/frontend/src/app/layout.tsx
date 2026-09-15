@@ -4,6 +4,9 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "Yojana Saathi AI - Citizen Scheme Assistant",
   description: "AI-driven discovery and navigation for Government of India citizen welfare schemes.",
+  icons: {
+    icon: "/favicon.ico",
+  },
 };
 
 export default function RootLayout({
