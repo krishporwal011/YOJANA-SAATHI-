@@ -4,7 +4,7 @@ import urllib.request
 import urllib.parse
 from pathlib import Path
 from typing import Dict, Any, List, Optional
-from fastapi import FastAPI, HTTPException, status
+from fastapi import FastAPI, HTTPException, status, Response
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
@@ -18,10 +18,20 @@ app = FastAPI(
     version="1.0.0",
 )
 
-# Enable CORS for frontend development
+# Enable CORS for frontend integration
+frontend_url_env = os.getenv("FRONTEND_URL", "").strip()
+if frontend_url_env:
+    allowed_origins = [origin.strip() for origin in frontend_url_env.split(",") if origin.strip()]
+    default_local_origins = ["http://localhost:3000", "http://localhost:3001", "http://127.0.0.1:3000", "http://127.0.0.1:3001"]
+    for local_origin in default_local_origins:
+        if local_origin not in allowed_origins:
+            allowed_origins.append(local_origin)
+else:
+    allowed_origins = ["*"]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Adjust in production
+    allow_origins=allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -61,6 +71,13 @@ def health_check():
         "service": "Yojana Saathi API",
         "version": "1.0.0",
     }
+
+
+@app.head("/", tags=["Health"])
+@app.head("/api/health", tags=["Health"])
+def health_check_head():
+    return Response(status_code=200)
+
 
 
 @app.post("/api/auth/login", response_model=LoginResponse, tags=["Auth"])

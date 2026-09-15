@@ -15,6 +15,8 @@ interface LoginFormProps {
   onLoginSuccess: (phoneOrEmail: string, token: string, googleUserData?: GoogleUserData) => void;
 }
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000";
+
 const GoogleIcon = () => (
   <svg className="w-5 h-5 shrink-0" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
     <path
@@ -83,7 +85,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
 
     try {
       // Attempt backend authentication
-      const res = await fetch("http://localhost:8000/api/auth/login", {
+      const res = await fetch(`${API_BASE_URL}/api/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ phone: trimmedPhone, otp: trimmedOtp }),
@@ -191,7 +193,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
   };
 
   const completeGoogleAuth = (name: string, email: string) => {
-    fetch("http://localhost:8000/api/auth/google", {
+    fetch(`${API_BASE_URL}/api/auth/google`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name, email, token: "google-auth-token" }),

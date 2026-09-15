@@ -258,6 +258,28 @@ def test_malformed_scheme_json_handling():
     print("Malformed scheme JSON safety assertions passed successfully!")
 
 
+def test_health_check_head_endpoint():
+    print("\n--- Testing Health Check HEAD & GET Endpoints ---")
+    from app.backend.api.main import app as main_app
+    client = TestClient(main_app)
+
+    # Test GET /api/health
+    resp_get = client.get("/api/health")
+    assert resp_get.status_code == 200, f"Expected 200 for GET /api/health, got {resp_get.status_code}"
+    assert resp_get.json() == {
+        "status": "healthy",
+        "service": "Yojana Saathi API",
+        "version": "1.0.0",
+    }, f"Unexpected GET health body: {resp_get.json()}"
+
+    # Test HEAD /api/health
+    resp_head = client.head("/api/health")
+    assert resp_head.status_code == 200, f"Expected 200 for HEAD /api/health, got {resp_head.status_code}"
+    assert len(resp_head.content) == 0, f"Expected empty response body for HEAD request, got {len(resp_head.content)} bytes"
+
+    print("Health check HEAD & GET assertions passed successfully!")
+
+
 if __name__ == "__main__":
     test_demo_profile_direct()
     test_demo_profile_api_endpoint()
@@ -265,6 +287,8 @@ if __name__ == "__main__":
     test_occupation_matching()
     test_income_validation()
     test_malformed_scheme_json_handling()
+    test_health_check_head_endpoint()
+
 
 
 
