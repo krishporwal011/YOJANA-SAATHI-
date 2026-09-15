@@ -24,7 +24,7 @@ interface SchemeData {
   last_verified?: string;
 }
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000";
+const API_BASE_URL = (process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000").replace(/\/$/, "");
 
 export const SchemesPreview: React.FC = () => {
   const [schemes, setSchemes] = useState<SchemeData[]>([]);
@@ -84,7 +84,9 @@ export const SchemesPreview: React.FC = () => {
           <div className="text-2xl mb-2">🏛️</div>
           <h4 className="text-sm font-bold text-amber-900 mb-1">Backend Schemes Service Offline</h4>
           <p className="text-xs text-amber-700">
-            Start the backend server on port 8000 (`uvicorn app.backend.api.main:app`) to load the canonical scheme catalog.
+            {API_BASE_URL.includes("localhost") || API_BASE_URL.includes("127.0.0.1")
+              ? "Start the backend server on port 8000 (`uvicorn app.backend.api.main:app`) to load the canonical scheme catalog."
+              : "The backend scheme service is currently unavailable. Please verify your connection or try again later."}
           </p>
         </div>
       ) : (

@@ -18,23 +18,28 @@ interface SchemeInfo {
   deadline?: string;
 }
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000";
+const API_BASE_URL = (
+  process.env.BACKEND_API_BASE_URL ||
+  process.env.API_BASE_URL ||
+  process.env.NEXT_PUBLIC_API_BASE_URL ||
+  "http://localhost:8000"
+).replace(/\/$/, "");
 
 async function fetchVerifiedSchemesFromBackend(): Promise<SchemeInfo[]> {
   try {
     const res = await fetch(`${API_BASE_URL}/api/schemes`, {
       headers: { "Content-Type": "application/json" },
       cache: "no-store",
-      signal: AbortSignal.timeout(3000),
+      signal: AbortSignal.timeout(12000),
     });
     if (res.ok) {
       const data = await res.json();
-      if (Array.isArray(data)) {
+      if (Array.isArray(data) && data.length > 0) {
         return data;
       }
     }
   } catch (err) {
-    console.error("Error fetching canonical scheme data from FastAPI backend:", err);
+    console.error(`Error fetching canonical scheme data from backend (${API_BASE_URL}/api/schemes):`, err);
   }
 
   return [];
@@ -49,6 +54,29 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Message is required." }, { status: 400 });
     }
 
+    // 1. Delegate to FastAPI backend AI chat endpoint if reachable
+    try {
+      const backendRes = await fetch(`${API_BASE_URL}/api/ai/chat`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          message,
+          user_profile: userProfile || null,
+        }),
+        signal: AbortSignal.timeout(12000),
+      });
+
+      if (backendRes.ok) {
+        const backendData = await backendRes.json();
+        if (backendData && backendData.reply) {
+          return NextResponse.json({ reply: backendData.reply });
+        }
+      }
+    } catch (backendErr) {
+      console.warn(`Backend chat endpoint (${API_BASE_URL}/api/ai/chat) unavailable or timed out:`, backendErr);
+    }
+
+    // 2. Server-side Gemini API or scheme-grounded fallback
     const apiKey = process.env.GEMINI_API_KEY;
     const schemesData = await fetchVerifiedSchemesFromBackend();
 
@@ -208,7 +236,11 @@ function findMatchingSchemes(userQuery: string, schemes: SchemeInfo[]): { bestMa
 
 function generateOfflineFallbackResponse(userMessage: string, schemes: SchemeInfo[]): string {
   if (!schemes || schemes.length === 0) {
-    return `Hello! I am **Yojana Saathi AI**, your government scheme assistant.\n\nScheme context is currently unavailable because the backend scheme service is offline. Please start the backend server on port 8000 (\`uvicorn app.backend.api.main:app\`) or verify scheme criteria on official portals like [https://india.gov.in](https://india.gov.in).`;
+    const isLocalDev = API_BASE_URL.includes("localhost") || API_BASE_URL.includes("127.0.0.1");
+    if (isLocalDev) {
+      return `Hello! I am **Yojana Saathi AI**, your government scheme assistant.\n\nScheme context is currently unavailable because the backend scheme service is offline. Please start the backend server on port 8000 (\`uvicorn app.backend.api.main:app\`) or verify scheme criteria on official portals like [https://india.gov.in](https://india.gov.in).`;
+    }
+    return `Hello! I am **Yojana Saathi AI**, your government scheme assistant.\n\nI am currently operating with direct guidance. For official government scheme details and portal links, please check portals like [https://india.gov.in](https://india.gov.in) or use our Eligibility Check tool.`;
   }
 
   const queryLower = userMessage.toLowerCase().trim();
