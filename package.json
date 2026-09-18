@@ -1,0 +1,12 @@
+{
+  "name": "yojana-saathi",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Yojana Saathi AI root workspace scripts",
+  "scripts": {
+    "dev": "npm --prefix app/frontend run dev",
+    "build": "npm --prefix app/frontend run build",
+    "start": "npm --prefix app/frontend run start",
+    "lint": "npm --prefix app/frontend run lint"
+  }
+}
