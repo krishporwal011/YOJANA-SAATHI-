@@ -1,9 +1,12 @@
 import { NextResponse } from "next/server";
+import { buildApiUrl, getApiBaseUrl } from "@/config/api";
+import { FALLBACK_COLD_START_SCHEME_SNAPSHOT } from "@/config/schemeFallbackSnapshot";
 
 interface SchemeInfo {
   id?: string;
   scheme_name: string;
   ministry?: string;
+  state?: string;
   benefits?: string;
   eligibility?: {
     age_min?: number | null;
@@ -16,21 +19,106 @@ interface SchemeInfo {
   documents?: string[];
   application_url?: string;
   deadline?: string;
+  source_url?: string;
+  last_verified?: string;
 }
 
-const API_BASE_URL = (
-  process.env.BACKEND_API_BASE_URL ||
-  process.env.API_BASE_URL ||
-  process.env.NEXT_PUBLIC_API_BASE_URL ||
-  "http://localhost:8000"
-).replace(/\/$/, "");
+type GeminiErrorClassification =
+  | "INVALID_API_KEY"
+  | "QUOTA_EXCEEDED"
+  | "TIMEOUT"
+  | "NETWORK_FAILURE"
+  | "MODEL_ERROR"
+  | "MALFORMED_RESPONSE"
+  | "UNKNOWN_ERROR";
 
-async function fetchVerifiedSchemesFromBackend(): Promise<SchemeInfo[]> {
+interface ClassifiedGeminiError {
+  type: GeminiErrorClassification;
+  message: string;
+  statusCode?: number;
+  userFriendlyNotice: string;
+}
+
+function classifyGeminiError(error: unknown, status?: number, errorBody?: string): ClassifiedGeminiError {
+  if (status === 400 || status === 403) {
+    if (
+      errorBody &&
+      (errorBody.includes("API_KEY_INVALID") ||
+        errorBody.includes("not valid") ||
+        errorBody.includes("PERMISSION_DENIED"))
+    ) {
+      return {
+        type: "INVALID_API_KEY",
+        message: "Gemini API key is invalid or unauthorized.",
+        statusCode: status,
+        userFriendlyNotice: "AI assistant operating in verified scheme fallback mode (API authorization).",
+      };
+    }
+  }
+
+  if (status === 429) {
+    return {
+      type: "QUOTA_EXCEEDED",
+      message: "Gemini API rate limit or quota exceeded.",
+      statusCode: 429,
+      userFriendlyNotice: "AI service rate limit reached. Operating in verified scheme fallback mode.",
+    };
+  }
+
+  if (status && status >= 500) {
+    return {
+      type: "MODEL_ERROR",
+      message: `Gemini upstream model error (HTTP ${status}).`,
+      statusCode: status,
+      userFriendlyNotice: "Gemini upstream service is temporarily unavailable. Operating in verified scheme fallback mode.",
+    };
+  }
+
+  if (error instanceof Error) {
+    const msg = error.message.toLowerCase();
+    if (error.name === "TimeoutError" || error.name === "AbortError" || msg.includes("timeout")) {
+      return {
+        type: "TIMEOUT",
+        message: `Gemini API request timed out: ${error.message}`,
+        userFriendlyNotice: "AI service response timed out. Operating in verified scheme fallback mode.",
+      };
+    }
+    if (msg.includes("fetch failed") || msg.includes("econnrefused") || msg.includes("network")) {
+      return {
+        type: "NETWORK_FAILURE",
+        message: `Network failure connecting to Gemini: ${error.message}`,
+        userFriendlyNotice: "Network connection to AI service failed. Operating in verified scheme fallback mode.",
+      };
+    }
+    if (msg.includes("json") || msg.includes("unexpected token")) {
+      return {
+        type: "MALFORMED_RESPONSE",
+        message: `Malformed response from Gemini: ${error.message}`,
+        userFriendlyNotice: "Received malformed response from AI provider. Operating in verified scheme fallback mode.",
+      };
+    }
+  }
+
+  return {
+    type: "UNKNOWN_ERROR",
+    message: String(error || "Unknown Gemini API error"),
+    statusCode: status,
+    userFriendlyNotice: "AI service error encountered. Operating in verified scheme fallback mode.",
+  };
+}
+
+/**
+ * Loads scheme data for context.
+ * 1. Queries live FastAPI backend (GET /api/schemes) as the canonical source of truth.
+ * 2. If backend is cold-starting or unreachable, smoothly falls back to the static snapshot.
+ */
+async function fetchVerifiedSchemes(): Promise<SchemeInfo[]> {
   try {
-    const res = await fetch(`${API_BASE_URL}/api/schemes`, {
+    const schemesUrl = buildApiUrl("/api/schemes");
+    const res = await fetch(schemesUrl, {
       headers: { "Content-Type": "application/json" },
       cache: "no-store",
-      signal: AbortSignal.timeout(12000),
+      signal: AbortSignal.timeout(6000),
     });
     if (res.ok) {
       const data = await res.json();
@@ -39,10 +127,11 @@ async function fetchVerifiedSchemesFromBackend(): Promise<SchemeInfo[]> {
       }
     }
   } catch (err) {
-    console.error(`Error fetching canonical scheme data from backend (${API_BASE_URL}/api/schemes):`, err);
+    console.warn("Backend /api/schemes timed out or cold-starting. Using verified snapshot for chatbot context.");
   }
 
-  return [];
+  // Safe fallback snapshot during Render free-tier cold starts
+  return FALLBACK_COLD_START_SCHEME_SNAPSHOT;
 }
 
 export async function POST(request: Request) {
@@ -56,14 +145,15 @@ export async function POST(request: Request) {
 
     // 1. Delegate to FastAPI backend AI chat endpoint if reachable
     try {
-      const backendRes = await fetch(`${API_BASE_URL}/api/ai/chat`, {
+      const backendChatUrl = buildApiUrl("/api/ai/chat");
+      const backendRes = await fetch(backendChatUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           message,
           user_profile: userProfile || null,
         }),
-        signal: AbortSignal.timeout(12000),
+        signal: AbortSignal.timeout(8000),
       });
 
       if (backendRes.ok) {
@@ -71,14 +161,16 @@ export async function POST(request: Request) {
         if (backendData && backendData.reply) {
           return NextResponse.json({ reply: backendData.reply });
         }
+      } else {
+        console.warn(`Backend chat endpoint returned HTTP ${backendRes.status}. Falling back to server-side AI.`);
       }
     } catch (backendErr) {
-      console.warn(`Backend chat endpoint (${API_BASE_URL}/api/ai/chat) unavailable or timed out:`, backendErr);
+      console.warn("Backend chat endpoint unavailable or cold-starting. Falling back to server-side AI.");
     }
 
     // 2. Server-side Gemini API or scheme-grounded fallback
     const apiKey = process.env.GEMINI_API_KEY;
-    const schemesData = await fetchVerifiedSchemesFromBackend();
+    const schemesData = await fetchVerifiedSchemes();
 
     const systemPrompt = `You are Yojana Saathi AI, an intelligent government scheme assistance chatbot for Indian citizens.
 Your job is to help citizens understand government schemes, benefits, eligibility criteria, required documents, and official application steps in simple, clear, and citizen-friendly language.
@@ -98,60 +190,73 @@ CRITICAL RULES & BEHAVIORAL DIRECTIVES:
 6. Always provide official government portal links (e.g. https://pmkisan.gov.in/, https://nha.gov.in/PM-JAY, https://scholarships.gov.in/) when relevant.
 7. Keep answers concise, empathetic, simple, and easy to read. Avoid overly technical jargon.
 
-${userProfile ? `
+${
+  userProfile
+    ? `
 LOGGED-IN CITIZEN PROFILE CONTEXT (For general guidance reference only):
-- Name: ${userProfile.name || 'Citizen'}
-- State: ${userProfile.state || 'N/A'}
-- Income: ₹${userProfile.income ? Number(userProfile.income).toLocaleString('en-IN') : 'N/A'}/year
-- Age: ${userProfile.age || 'N/A'}
-- Occupation: ${userProfile.occupation || 'N/A'}
-- Category: ${userProfile.category || 'N/A'}
-- Education: ${userProfile.education || 'N/A'}
+- Name: ${userProfile.name || "Citizen"}
+- State: ${userProfile.state || "N/A"}
+- Income: ₹${userProfile.income ? Number(userProfile.income).toLocaleString("en-IN") : "N/A"}/year
+- Age: ${userProfile.age || "N/A"}
+- Occupation: ${userProfile.occupation || "N/A"}
+- Category: ${userProfile.category || "N/A"}
+- Education: ${userProfile.education || "N/A"}
 Note: Mention that eligibility matching is calculated deterministically by the rule engine.
-` : ''}`;
+`
+    : ""
+}`;
 
     if (!apiKey) {
       const fallbackReply = generateOfflineFallbackResponse(message, schemesData);
       return NextResponse.json({
         reply: fallbackReply,
-        note: "Server Notice: GEMINI_API_KEY is not set in .env.local. Operating in offline verified scheme mode."
       });
     }
 
-    const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${apiKey}`;
+    const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
 
     const contentsPayload = [
       {
         role: "user",
-        parts: [{ text: `${systemPrompt}\n\nUser Question: ${message}` }]
-      }
+        parts: [{ text: `${systemPrompt}\n\nUser Question: ${message}` }],
+      },
     ];
 
-    const response = await fetch(geminiUrl, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ contents: contentsPayload }),
-    });
-
-    if (!response.ok) {
-      const errText = await response.text();
-      console.error("Gemini API Error:", errText);
-      const fallbackReply = generateOfflineFallbackResponse(message, schemesData);
-      return NextResponse.json({
-        reply: fallbackReply,
-        warning: "Gemini API returned an error. Operated in verified scheme fallback mode."
+    try {
+      const response = await fetch(geminiUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ contents: contentsPayload }),
+        signal: AbortSignal.timeout(12000),
       });
-    }
 
-    const data = await response.json();
-    const replyText = data.candidates?.[0]?.content?.parts?.[0]?.text;
+      if (!response.ok) {
+        const errText = await response.text();
+        const classified = classifyGeminiError(null, response.status, errText);
+        console.error(`Gemini Error [${classified.type}]: HTTP ${response.status} - ${classified.message}`);
+        const fallbackReply = generateOfflineFallbackResponse(message, schemesData);
+        return NextResponse.json({
+          reply: fallbackReply,
+        });
+      }
 
-    if (!replyText) {
+      const data = await response.json();
+      const replyText = data.candidates?.[0]?.content?.parts?.[0]?.text;
+
+      if (!replyText) {
+        const classified = classifyGeminiError(new Error("Empty candidates array"), 200);
+        console.error(`Gemini Error [${classified.type}]: ${classified.message}`);
+        const fallbackReply = generateOfflineFallbackResponse(message, schemesData);
+        return NextResponse.json({ reply: fallbackReply });
+      }
+
+      return NextResponse.json({ reply: replyText });
+    } catch (fetchErr) {
+      const classified = classifyGeminiError(fetchErr);
+      console.error(`Gemini Error [${classified.type}]: ${classified.message}`);
       const fallbackReply = generateOfflineFallbackResponse(message, schemesData);
       return NextResponse.json({ reply: fallbackReply });
     }
-
-    return NextResponse.json({ reply: replyText });
   } catch (error: any) {
     console.error("Error in /api/chat route:", error);
     return NextResponse.json(
@@ -161,21 +266,23 @@ Note: Mention that eligibility matching is calculated deterministically by the r
   }
 }
 
-function findMatchingSchemes(userQuery: string, schemes: SchemeInfo[]): { bestMatch?: SchemeInfo; categoryMatches: SchemeInfo[] } {
+function findMatchingSchemes(
+  userQuery: string,
+  schemes: SchemeInfo[]
+): { bestMatch?: SchemeInfo; categoryMatches: SchemeInfo[] } {
   const queryLower = userQuery.toLowerCase().trim();
   const cleanQuery = queryLower.replace(/[^a-z0-9\s-]/g, " ");
 
   // 1. Direct ID match (e.g. "SCH-001", "SCH-002", "sch-001")
-  const idMatch = schemes.find(s => s.id && queryLower.includes(s.id.toLowerCase()));
+  const idMatch = schemes.find((s) => s.id && queryLower.includes(s.id.toLowerCase()));
   if (idMatch) return { bestMatch: idMatch, categoryMatches: [idMatch] };
 
   // 2. Direct scheme name / short alias match (e.g. "PM-KISAN", "PM KISAN", "Ayushman", "NSP")
   for (const s of schemes) {
     if (!s.scheme_name) continue;
     const sNameLower = s.scheme_name.toLowerCase();
-    // Check main scheme name or main acronym prefix (like "PM-KISAN", "PM-JAY", "NCS")
     const shortPrefix = sNameLower.split(/\s+/)[0]; // e.g. "pm-kisan"
-    const cleanedShortPrefix = shortPrefix.replace(/[^a-z0-9]/g, ""); // e.g. "pmkisan"
+    const cleanedShortPrefix = shortPrefix.replace(/[^a-z0-9]/g, "");
     const cleanedQuery = queryLower.replace(/[^a-z0-9]/g, "");
 
     if (
@@ -192,12 +299,12 @@ function findMatchingSchemes(userQuery: string, schemes: SchemeInfo[]): { bestMa
     "what", "is", "are", "the", "for", "in", "of", "to", "and", "a", "an",
     "tell", "me", "about", "when", "will", "open", "opening", "start", "required",
     "document", "documents", "paper", "papers", "proof", "scheme", "schemes",
-    "government", "govt", "details", "info", "information", "can", "i", "get", "how", "apply", "who", "which"
+    "government", "govt", "details", "info", "information", "can", "i", "get", "how", "apply", "who", "which",
   ]);
 
   const queryWords = cleanQuery
     .split(/\s+/)
-    .filter(w => w.length > 1 && !stopWords.has(w));
+    .filter((w) => w.length > 1 && !stopWords.has(w));
 
   // 3. Keyword scoring across scheme attributes
   let bestMatch: SchemeInfo | undefined;
@@ -236,7 +343,11 @@ function findMatchingSchemes(userQuery: string, schemes: SchemeInfo[]): { bestMa
 
 function generateOfflineFallbackResponse(userMessage: string, schemes: SchemeInfo[]): string {
   if (!schemes || schemes.length === 0) {
-    const isLocalDev = API_BASE_URL.includes("localhost") || API_BASE_URL.includes("127.0.0.1");
+    const isLocalDev =
+      !process.env.VERCEL &&
+      process.env.NODE_ENV !== "production" &&
+      (getApiBaseUrl().includes("localhost") || getApiBaseUrl().includes("127.0.0.1"));
+
     if (isLocalDev) {
       return `Hello! I am **Yojana Saathi AI**, your government scheme assistant.\n\nScheme context is currently unavailable because the backend scheme service is offline. Please start the backend server on port 8000 (\`uvicorn app.backend.api.main:app\`) or verify scheme criteria on official portals like [https://india.gov.in](https://india.gov.in).`;
     }
@@ -261,15 +372,16 @@ function generateOfflineFallbackResponse(userMessage: string, schemes: SchemeInf
 
     // Document question about a specific scheme
     if (isDocQuestion) {
-      const docsList = Array.isArray(bestMatch.documents) && bestMatch.documents.length > 0
-        ? bestMatch.documents.map(d => `- ${d}`).join("\n")
-        : "- Refer to official portal";
+      const docsList =
+        Array.isArray(bestMatch.documents) && bestMatch.documents.length > 0
+          ? bestMatch.documents.map((d) => `- ${d}`).join("\n")
+          : "- Refer to official portal";
       return `**Required Documents for ${bestMatch.scheme_name}**:\n\n${docsList}\n\nOfficial Portal: [${portalUrl}](${portalUrl})\n\n*Note: Official eligibility verification is performed deterministically by the Yojana Saathi Rule Engine.*`;
     }
 
     // General query about a specific scheme
     const docsStr = Array.isArray(bestMatch.documents) ? bestMatch.documents.join(", ") : "Refer to official portal";
-    return `**${bestMatch.scheme_name}** (${bestMatch.id || ''})\n\n- **Ministry**: ${bestMatch.ministry || "Government of India"}\n- **Benefits**: ${bestMatch.benefits || "N/A"}\n- **Required Documents**: ${docsStr}\n- **Official Portal**: [${portalUrl}](${portalUrl})\n\n*Note: Official eligibility verification is performed deterministically by the Yojana Saathi Rule Engine.*`;
+    return `**${bestMatch.scheme_name}** (${bestMatch.id || ""})\n\n- **Ministry**: ${bestMatch.ministry || "Government of India"}\n- **Benefits**: ${bestMatch.benefits || "N/A"}\n- **Required Documents**: ${docsStr}\n- **Official Portal**: [${portalUrl}](${portalUrl})\n\n*Note: Official eligibility verification is performed deterministically by the Yojana Saathi Rule Engine.*`;
   }
 
   // Scenario B: Category matches found (e.g. "farmer government schemes" or "student scholarship")
@@ -280,9 +392,10 @@ function generateOfflineFallbackResponse(userMessage: string, schemes: SchemeInf
       return `The verified scheme records available to Yojana Saathi do not contain the specific current opening date for this category/course.\n\nRelevant scheme in records: **${targetScheme.scheme_name}**.\n\nFor official opening dates and real-time portal updates, please check the official portal: [${portalUrl}](${portalUrl}).\n\n*Note: Official eligibility verification is performed deterministically by the Yojana Saathi Rule Engine.*`;
     }
 
-    const schemeList = categoryMatches.slice(0, 4).map(s => 
-      `- **${s.scheme_name}** (${s.id || ''}): ${s.benefits || 'Welfare benefit scheme'}`
-    ).join("\n");
+    const schemeList = categoryMatches
+      .slice(0, 4)
+      .map((s) => `- **${s.scheme_name}** (${s.id || ""}): ${s.benefits || "Welfare benefit scheme"}`)
+      .join("\n");
 
     return `Here are verified government schemes matching your inquiry from our catalog (${categoryMatches.length} schemes found):\n\n${schemeList}\n\nFor official eligibility determination, please use the **Check Eligibility Now** tool!`;
   }
@@ -295,4 +408,3 @@ function generateOfflineFallbackResponse(userMessage: string, schemes: SchemeInf
   // Scenario D: No match found — Useful clarification prompt
   return `I couldn't find a matching scheme in the verified records for "${userMessage}".\n\nPlease specify the scheme name (e.g. **PM-KISAN**, **Ayushman Bharat**, **SCH-001**) or the benefit/category you are looking for (e.g., farmer support, student scholarship, health insurance).`;
 }
-

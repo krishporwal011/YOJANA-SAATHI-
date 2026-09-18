@@ -41,7 +41,7 @@ interface SchemeMetadata {
   application_url?: string;
 }
 
-const API_BASE_URL = (process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000").replace(/\/$/, "");
+import { buildApiUrl } from "../config/api";
 
 export const ResultsScreen: React.FC<ResultsProps> = ({
   profile,
@@ -71,7 +71,7 @@ export const ResultsScreen: React.FC<ResultsProps> = ({
         };
 
         // Call authoritative backend eligibility check API
-        const eligibilityRes = await fetch(`${API_BASE_URL}/api/eligibility/check`, {
+        const eligibilityRes = await fetch(buildApiUrl("/api/eligibility/check"), {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload),
@@ -90,7 +90,7 @@ export const ResultsScreen: React.FC<ResultsProps> = ({
         // Fetch scheme metadata from existing GET /api/schemes endpoint for visual details
         let schemesMetadata: SchemeMetadata[] = [];
         try {
-          const metaRes = await fetch(`${API_BASE_URL}/api/schemes`);
+          const metaRes = await fetch(buildApiUrl("/api/schemes"));
           if (metaRes.ok) {
             schemesMetadata = await metaRes.json();
           }

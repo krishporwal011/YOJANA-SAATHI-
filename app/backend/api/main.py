@@ -2,6 +2,7 @@ import os
 import json
 import urllib.request
 import urllib.parse
+import urllib.error
 from pathlib import Path
 from typing import Dict, Any, List, Optional
 from fastapi import FastAPI, HTTPException, status, Response
@@ -253,7 +254,7 @@ def ai_chat(req: ChatRequest):
             "offline": True
         }
 
-    gemini_url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key={api_key}"
+    gemini_url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key}"
     payload = {
         "contents": [
             {
@@ -277,7 +278,33 @@ def ai_chat(req: ChatRequest):
             if not reply_text:
                 reply_text = "Thank you for your question. Please verify criteria on the official portal."
             return {"reply": reply_text, "offline": False}
-    except Exception:
+    except urllib.error.HTTPError as http_err:
+        err_type = "MODEL_ERROR"
+        if http_err.code in (400, 403):
+            err_type = "INVALID_API_KEY"
+        elif http_err.code == 429:
+            err_type = "QUOTA_EXCEEDED"
+        elif http_err.code >= 500:
+            err_type = "UPSTREAM_GEMINI_ERROR"
+        print(f"Gemini API Error [{err_type}]: HTTP {http_err.code}")
+        raise HTTPException(
+            status_code=status.HTTP_502_BAD_GATEWAY,
+            detail="The AI guidance service is temporarily unavailable. Please try again later or use the deterministic Eligibility Check tool."
+        )
+    except urllib.error.URLError as url_err:
+        print(f"Gemini API Error [NETWORK_FAILURE]: {type(url_err).__name__}")
+        raise HTTPException(
+            status_code=status.HTTP_502_BAD_GATEWAY,
+            detail="The AI guidance service is temporarily unavailable. Please try again later or use the deterministic Eligibility Check tool."
+        )
+    except TimeoutError:
+        print("Gemini API Error [TIMEOUT]: request timed out after 10s")
+        raise HTTPException(
+            status_code=status.HTTP_502_BAD_GATEWAY,
+            detail="The AI guidance service is temporarily unavailable. Please try again later or use the deterministic Eligibility Check tool."
+        )
+    except Exception as exc:
+        print(f"Gemini API Error [UNKNOWN_ERROR]: {type(exc).__name__}")
         raise HTTPException(
             status_code=status.HTTP_502_BAD_GATEWAY,
             detail="The AI guidance service is temporarily unavailable. Please try again later or use the deterministic Eligibility Check tool."

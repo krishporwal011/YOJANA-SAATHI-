@@ -24,7 +24,7 @@ interface SchemeData {
   last_verified?: string;
 }
 
-const API_BASE_URL = (process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000").replace(/\/$/, "");
+import { buildApiUrl, getApiBaseUrl } from "../config/api";
 
 export const SchemesPreview: React.FC = () => {
   const [schemes, setSchemes] = useState<SchemeData[]>([]);
@@ -36,7 +36,7 @@ export const SchemesPreview: React.FC = () => {
       setLoading(true);
       setError(false);
       try {
-        const res = await fetch(`${API_BASE_URL}/api/schemes`);
+        const res = await fetch(buildApiUrl("/api/schemes"));
         if (res.ok) {
           const data = await res.json();
           if (Array.isArray(data) && data.length > 0) {
@@ -56,6 +56,10 @@ export const SchemesPreview: React.FC = () => {
 
     loadSchemes();
   }, []);
+
+  const isLocalDev =
+    typeof window !== "undefined" &&
+    (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1");
 
   return (
     <div className="w-full max-w-5xl mt-10">
@@ -84,9 +88,9 @@ export const SchemesPreview: React.FC = () => {
           <div className="text-2xl mb-2">🏛️</div>
           <h4 className="text-sm font-bold text-amber-900 mb-1">Backend Schemes Service Offline</h4>
           <p className="text-xs text-amber-700">
-            {API_BASE_URL.includes("localhost") || API_BASE_URL.includes("127.0.0.1")
+            {isLocalDev
               ? "Start the backend server on port 8000 (`uvicorn app.backend.api.main:app`) to load the canonical scheme catalog."
-              : "The backend scheme service is currently unavailable. Please verify your connection or try again later."}
+              : "The backend scheme service is currently warming up or unavailable. Please try again in a few moments or use our Eligibility Check tool."}
           </p>
         </div>
       ) : (
