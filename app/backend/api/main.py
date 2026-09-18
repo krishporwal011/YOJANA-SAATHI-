@@ -19,23 +19,66 @@ app = FastAPI(
     version="1.0.0",
 )
 
-# Enable CORS for frontend integration
-frontend_url_env = os.getenv("FRONTEND_URL", "").strip()
-if frontend_url_env:
-    allowed_origins = [origin.strip() for origin in frontend_url_env.split(",") if origin.strip()]
-    default_local_origins = ["http://localhost:3000", "http://localhost:3001", "http://127.0.0.1:3000", "http://127.0.0.1:3001"]
-    for local_origin in default_local_origins:
-        if local_origin not in allowed_origins:
-            allowed_origins.append(local_origin)
-else:
-    allowed_origins = ["*"]
+# ---------------------------------------------------------------------------
+# CORS configuration
+# ---------------------------------------------------------------------------
+# Browser -> backend calls (eligibility check, schemes, auth) require the exact
+# request Origin to appear in the allowlist. Origin values are compared by exact
+# string match, so "https://example.com/" (trailing slash) does NOT match the
+# Origin header "https://example.com" and the preflight is rejected with no
+# Access-Control-Allow-Origin header. Every configured value is therefore
+# normalized before use.
 
+# Known production frontend. Kept as a built-in default so the deployed site
+# keeps working even if FRONTEND_URL is missing or misconfigured on Render.
+PRODUCTION_FRONTEND_ORIGINS = [
+    "https://yojana-saathi-hazel.vercel.app",
+]
+
+DEFAULT_LOCAL_ORIGINS = [
+    "http://localhost:3000",
+    "http://localhost:3001",
+    "http://127.0.0.1:3000",
+    "http://127.0.0.1:3001",
+]
+
+
+def _normalize_origin(value: str) -> str:
+    """Trim whitespace/quotes and strip trailing slashes from an origin value."""
+    return value.strip().strip('"').strip("'").rstrip("/")
+
+
+# FRONTEND_URL may hold a single origin or a comma-separated list.
+frontend_url_env = os.getenv("FRONTEND_URL", "")
+configured_origins = [
+    _normalize_origin(origin)
+    for origin in frontend_url_env.split(",")
+    if _normalize_origin(origin)
+]
+
+allowed_origins: List[str] = []
+for origin in configured_origins + PRODUCTION_FRONTEND_ORIGINS + DEFAULT_LOCAL_ORIGINS:
+    if origin not in allowed_origins:
+        allowed_origins.append(origin)
+
+# Optional: allow Vercel preview deployments (https://<branch>-<hash>.vercel.app).
+# Disabled by default; set ALLOW_VERCEL_PREVIEW_ORIGINS=true on Render to enable.
+allow_origin_regex = (
+    r"https://[a-z0-9-]+\.vercel\.app"
+    if os.getenv("ALLOW_VERCEL_PREVIEW_ORIGINS", "").strip().lower() in {"1", "true", "yes"}
+    else None
+)
+
+# NOTE: allow_origins=["*"] is intentionally never used here, because it is
+# invalid in combination with allow_credentials=True.
 app.add_middleware(
     CORSMiddleware,
     allow_origins=allowed_origins,
+    allow_origin_regex=allow_origin_regex,
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS", "HEAD"],
+    allow_headers=["Content-Type", "Authorization", "Accept", "Origin", "X-Requested-With"],
+    max_age=600,
 )
 
 app.include_router(eligibility_router)
