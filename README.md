@@ -86,9 +86,7 @@ From the repository root or backend directory:
 cd app/backend/api
 uvicorn main:app --reload --port 8000
 ```
-- **Backend API**: [http://localhost:8000](http://localhost:8000)
-- **Interactive Swagger Docs**: [http://localhost:8000/docs](http://localhost:8000/docs)
-- **Health Check**: [http://localhost:8000/api/health](http://localhost:8000/api/health)
+
 
 ---
 
@@ -101,7 +99,7 @@ In a separate terminal window:
 cd app/frontend
 npm run dev
 ```
-- **Frontend App**: [http://localhost:3000](http://localhost:3000)
+- **Frontend App**: {https://yojana-saathi-pink.vercel.app}
 
 ---
 
